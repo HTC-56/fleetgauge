@@ -1,0 +1,8 @@
+/fleetgauge
+dist/
+coverage.out
+*.log
+.loop-paused
+.escalate-rung
+ledger.jsonl
+fleetgauge.yaml
