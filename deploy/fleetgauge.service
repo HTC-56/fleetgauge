@@ -1,0 +1,51 @@
+# fleetgauge.service
+#
+# Install: copy this file to /etc/systemd/system/, place the fleet config
+# at /etc/fleetgauge/fleetgauge.yaml, then run
+#
+#   systemctl daemon-reload
+#   systemctl enable --now fleetgauge.service
+#
+# Public-repo rule: only localhost, 127.0.0.1, or 192.0.2.x addresses
+# appear here — never real hostnames or LAN IPs.
+
+# fleetgauge runs as root.  It needs to read other units' journals via
+# journalctl and call systemctl restart on them — both require privilege.
+# An operator who wants less-privileged monitoring can run fleetgauge as a
+# dedicated user and grant restart via a polkit rule; this file does not
+# attempt that setup.
+
+[Unit]
+Description=Fleetgauge — systemd unit health watcher
+After=network.target
+
+[Service]
+Type=simple
+
+# The binary ships to /usr/local/bin; the config goes under /etc/fleetgauge.
+ExecStart=/usr/local/bin/fleetgauge -config /etc/fleetgauge/fleetgauge.yaml
+
+# Restart after a crash or a failed unit check so the HTTP surface comes
+# back without manual intervention.
+Restart=on-failure
+RestartSec=5
+
+# ConfigurationDirectory=fleetgauge maps to /usr/lib/fleetgauge (or
+# /etc/fleetgauge if the file exists there) — that is where the operator
+# places fleetgauge.yaml.  StateDirectory=fleetgauge creates /var/lib/
+# fleetgauge with the correct ownership before the process starts, which
+# is where the example config's ledger_path points.  Without it the ledger
+# cannot be opened and fleetgauge exits.
+ConfigurationDirectory=fleetgauge
+StateDirectory=fleetgauge
+
+# Hardening that does not break the product: no new privileges, no access
+# to the home directory, private /tmp, and a read-only view of the OS
+# filesystem.  These reduce the blast radius if the binary is compromised.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectHome=yes
+ProtectSystem=full
+
+[Install]
+WantedBy=multi-user.target
