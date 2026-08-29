@@ -163,6 +163,6 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [ ] §E9 — [CLAUDE] Create `docs/PROCESS.md`: the loop story, with real
   numbers excerpted from `loop-ledger.tsv` and the null results named.
   Spec: §E9.
-- [ ] §E10 — Run `bash verify.sh`, append a Phase E section to STATUS.md, flip
+- [x] §E10 — Run `bash verify.sh`, append a Phase E section to STATUS.md, flip
   ROADMAP rows 9 and `docs/PROCESS.md` to SHIPPED, record two reservations.
   Spec: §E10.

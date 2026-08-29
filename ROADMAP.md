@@ -13,8 +13,8 @@ are the one permitted exception to append-only docs.
 | 6 | Triple-gated restart + action ledger | SHIPPED | D | ledger + handler + page control §D1–§D9; config key, tests, and wiring §D4–§D8 |
 | 7 | /healthz + /events + structured logs | SHIPPED | C | `/events` broadcast loop §C2; `/healthz` + request logs §C4–§C5; journal §C7 |
 | 8 | Demo mode / fake backend | SHIPPED | A, C | fake backend §A4–§A6; `-demo` serves the page §C9 |
-| 9 | Deploy-grade packaging (static binary, Makefile, dual-arch CI, unit file, quickstart) | PARTIAL | E | dual-arch CI + live-check.sh §E1–§E2; Makefile, unit file, README pending §E4–§E8 |
-| — | docs/PROCESS.md (the loop story) | NOT BUILT | E | §E9 writes it last, when the ledger it excerpts is complete |
+| 9 | Deploy-grade packaging (static binary, Makefile, dual-arch CI, unit file, quickstart) | SHIPPED | E | Makefile, CI, unit file, README, drift test, live-check.sh §E1–§E8 |
+| — | docs/PROCESS.md (the loop story) | SHIPPED | E | §E9 |
 
 When every row reads SHIPPED and verify.sh is green, the project is done — the
 planning lane declares PROJECT SPEC COMPLETE rather than inventing scope.
@@ -36,7 +36,14 @@ planning lane declares PROJECT SPEC COMPLETE rather than inventing scope.
   done.
 - **The hero screenshot for row 4 (the page) is a README artifact** and belongs
   to the packaging row (9), not to the page itself. The page is self-contained
-  HTML; a screenshot is a packaging deliverable.
+  HTML; a screenshot is a packaging deliverable. *(Never produced — it needs a
+  browser and a human and the loop has neither, so the README describes the
+  page in prose instead.)*
+- **`scripts/live-check.sh` is unwritten** (Phase A). Until it exists and a
+  human runs it, no claim that the real systemd backend ran may appear in the
+  README, STATUS.md, or PROCESS.md. Its home is the packaging row (9).
+  *(Half-resolved in Phase E, `feat(E2)`: the script now exists. The claim is
+  still unmade — a human has not run it, and only that run licenses it.)*
 - **`allow_restart` already rides in the fleet JSON payload** while the restart
   verb does not exist yet, so the page shows no restart control until the
   restart phase lands. The flag is a placeholder for the triple-gated restart.

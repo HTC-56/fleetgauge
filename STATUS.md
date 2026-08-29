@@ -59,3 +59,16 @@ self-containment (6 assertions each).
 **Not yet built:** there is no README, no Makefile and no CI; and the real
 systemd backend is still unproved on live systemd, because
 `scripts/live-check.sh` does not exist and a human runs it.
+
+## Phase E
+
+**Shipped:** the Makefile (`build`/`test`/`dist`/`clean`, `CGO_ENABLED=0`), the
+CI workflow with dual-arch static builds, the example systemd unit file with
+`StateDirectory` and hardening keys, the README with both quickstarts and the
+restart-gate section, the unit-file drift test between `fleetgauge.service` and
+`fleetgauge.example.yaml`, and `scripts/live-check.sh`.
+
+**Not yet true:** no human has run `live-check.sh` on a real systemd box, so the
+real systemd backend remains unproved and no claim about it appears in the docs;
+and the hero screenshot for the page was never produced — it needs a browser and
+a human, neither of which the loop has.
