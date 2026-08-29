@@ -19,9 +19,14 @@ type HealthJSON struct {
 	SnapshotAgeSec float64 `json:"snapshot_age_seconds"`
 }
 
-// Handler returns the top-level HTTP handler: a ServeMux wired to the four
-// fleetgauge routes (/, /healthz, /metrics, /events), wrapped in the
-// LogRequests middleware so every call is timestamped.
+// Handler returns the top-level HTTP handler: a ServeMux wired to the
+// fleetgauge routes (/, /healthz, /metrics, /events, the journal drawer and
+// the restart verb), wrapped in the LogRequests middleware so every call is
+// timestamped.
+//
+// Every route but one is a GET. POST /units/{name}/restart is registered with
+// its method spelled out, so a GET of that path is a 405 rather than a way to
+// restart a service by following a link.
 func (s *Server) Handler() http.Handler {
 	mux := http.NewServeMux()
 
@@ -30,6 +35,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/metrics", s.HandleMetrics)
 	mux.HandleFunc("/events", s.HandleEvents)
 	mux.HandleFunc("/units/{name}/journal", s.HandleJournal)
+	mux.HandleFunc("POST /units/{name}/restart", s.HandleRestart)
 
 	return LogRequests(s.log, mux)
 }

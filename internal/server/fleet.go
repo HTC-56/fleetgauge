@@ -8,8 +8,18 @@ import (
 	"time"
 
 	"fleetgauge/internal/backend"
+	"fleetgauge/internal/ledger"
 	"fleetgauge/internal/poller"
 )
+
+// Appender is the slice of internal/ledger the restart handler needs.
+//
+// It is an interface rather than a *ledger.Ledger so that a test can inject a
+// writer that fails, and prove the handler refuses the restart when the action
+// cannot be recorded.
+type Appender interface {
+	Append(ledger.Entry) error
+}
 
 // Defaults applied by New when an Options field is left zero.
 const (
@@ -89,6 +99,16 @@ type Options struct {
 	// unit name. Absent means false.
 	AllowRestart map[string]bool
 
+	// BearerToken authenticates the restart verb. An empty token disables
+	// restart entirely — an unset token must never be read as "anyone may
+	// restart anything".
+	BearerToken string
+
+	// Ledger records restart attempts. A nil Ledger disables the restart verb,
+	// because SPEC.md requires the append to happen before the backend is
+	// touched: an action that cannot be recorded is not performed.
+	Ledger Appender
+
 	// JournalLines caps how many lines the journal drawer returns.
 	JournalLines int
 
@@ -113,6 +133,8 @@ type Server struct {
 	store        *poller.Store
 	be           backend.Backend
 	allowRestart map[string]bool
+	bearerToken  string
+	ledger       Appender
 	journalLines int
 	interval     time.Duration
 	heartbeat    time.Duration
@@ -151,6 +173,8 @@ func New(opts Options) *Server {
 		store:        opts.Store,
 		be:           opts.Backend,
 		allowRestart: opts.AllowRestart,
+		bearerToken:  opts.BearerToken,
+		ledger:       opts.Ledger,
 		journalLines: opts.JournalLines,
 		interval:     opts.BroadcastInterval,
 		heartbeat:    opts.Heartbeat,
@@ -174,6 +198,17 @@ func (s *Server) JournalLines() int { return s.journalLines }
 
 // Backend returns the backend the journal drawer reads, which may be nil.
 func (s *Server) Backend() backend.Backend { return s.be }
+
+// AllowRestart reports whether the named unit opted in to restart.
+func (s *Server) AllowRestart(name string) bool { return s.allowRestart[name] }
+
+// RestartEnabled reports whether the restart verb is configured at all: it
+// needs a bearer token to check, a ledger to write to, and a backend to act
+// through. Missing any one of the three makes the endpoint report 503 rather
+// than pretend to be a working control.
+func (s *Server) RestartEnabled() bool {
+	return s.bearerToken != "" && s.ledger != nil && s.be != nil
+}
 
 // Now returns the server's clock reading.
 func (s *Server) Now() time.Time { return s.now() }
