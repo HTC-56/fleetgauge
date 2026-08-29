@@ -65,6 +65,6 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §B10 — Edit `cmd/fleetgauge/main.go`: `-demo` polls the fake fleet five
   times and prints a `text/tabwriter` overview table; no `-demo` loads the
   config and polls once. Interim until the page lands. Spec: §B10.
-- [ ] §B11 — Run `bash verify.sh`, append a Phase B section to STATUS.md, flip
+- [x] §B11 — Run `bash verify.sh`, append a Phase B section to STATUS.md, flip
   ROADMAP row 3 to SHIPPED and row 5 to PARTIAL, and record the interim
   `-demo` table as a reservation. Spec: §B11.

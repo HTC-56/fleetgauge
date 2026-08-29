@@ -9,6 +9,18 @@ is the executor's first Go repo).
 
 Per-phase sections append below as phases ship.
 
+## Phase B
+
+**Shipped:** the poller with per-unit ring-buffer history, transition detection,
+the overview view (`Store.Overview`), the Prometheus text renderer
+(`metrics.Render`), and the interim `-demo` table that polls the fake fleet
+and prints a `text/tabwriter` overview. Tests cover the ring, store, poller,
+overview, and metrics renderer (6 assertions each).
+
+**Not yet built:** no HTTP surface, so no page, no SSE, and `/metrics` renders
+but is not served; and the real systemd backend is still unproved on live
+systemd — `scripts/live-check.sh` does not exist and a human runs it.
+
 ## Phase A
 
 **Shipped:** the backend seam (interface + systemd backend + systemctl parse
