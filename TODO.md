@@ -102,3 +102,35 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §C10 — Run `bash verify.sh`, append a Phase C section to STATUS.md, flip
   ROADMAP rows 4, 5, 7 and 8 to SHIPPED, and record the two new reservations.
   Spec: §C10.
+
+## Phase D: the triple-gated restart — see TASK_PHASE_D.md
+
+The planning lane already shipped `internal/ledger/ledger.go`,
+`internal/server/restart.go`, the two new `Options` fields, the route, and the
+page's restart control (commits `feat(D1)`–`feat(D3)`). Build against those.
+`internal/server/server_test.go` is your pattern file for HTTP test tasks and
+`internal/config/config_test.go` for file-writing ones; both reuse helpers that
+already exist — never redefine `pinnedClock()`.
+Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
+`bash scripts/scrub-check.sh`.
+
+- [ ] §D4 — Create `internal/ledger/ledger_test.go`: 6 assertions on the JSONL
+  file (create, one object per line, field round-trip, reopen appends, Append
+  after Close, 20 concurrent appends). Spec: TASK_PHASE_D.md §D4.
+- [ ] §D5 — Create `internal/server/restart_test.go`: 6 assertions on the three
+  gates — 503 unconfigured, 401 bad token, 403 not opted in, 200 plus two
+  ledger lines, failing ledger refuses, 405 on GET. Spec: §D5.
+- [ ] §D6 — Edit `internal/config/config.go`: add the `ledger_path` key with
+  default `ledger.jsonl`, plus one rule — `allow_restart` needs a
+  `bearer_token`. 3 tests in `config_test.go`. Spec: §D6.
+- [ ] §D7 — Edit `deploy/fleetgauge.example.yaml`: document `ledger_path`, fix
+  the `journal_lines` comment, extend the `bearer_token` comment with the new
+  rule. No Go changes. Spec: §D7.
+- [ ] §D8 — Edit `cmd/fleetgauge/main.go`: open the ledger and pass
+  `BearerToken` + `Ledger` in both modes; add a `-token` flag that turns demo
+  restart on for three units. Spec: §D8.
+- [ ] §D9 — Create `internal/page/page_test.go`: 6 assertions that the page
+  stays self-contained (no http://, no `<link`, no @import) and carries the
+  restart control and a 7-wide drawer. Spec: §D9.
+- [ ] §D10 — Run `bash verify.sh`, append a Phase D section to STATUS.md, flip
+  ROADMAP row 6 to SHIPPED, and record the two new reservations. Spec: §D10.
