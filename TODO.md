@@ -117,7 +117,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §D4 — Create `internal/ledger/ledger_test.go`: 6 assertions on the JSONL
   file (create, one object per line, field round-trip, reopen appends, Append
   after Close, 20 concurrent appends). Spec: TASK_PHASE_D.md §D4.
-- [ ] §D5 — Create `internal/server/restart_test.go`: 6 assertions on the three
+- [x] §D5 — Create `internal/server/restart_test.go`: 6 assertions on the three
   gates — 503 unconfigured, 401 bad token, 403 not opted in, 200 plus two
   ledger lines, failing ledger refuses, 405 on GET. Spec: §D5.
 - [ ] §D6 — Edit `internal/config/config.go`: add the `ledger_path` key with
