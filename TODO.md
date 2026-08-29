@@ -29,7 +29,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §A8 — Create `internal/config/config_test.go`: 6 assertions using YAML
   fixtures written into `t.TempDir()` — round-trip, defaults, duration
   parsing, and three error cases. Spec: §A8.
-- [ ] §A9 — Create `deploy/fleetgauge.example.yaml`, a commented example
+- [x] §A9 — Create `deploy/fleetgauge.example.yaml`, a commented example
   covering every key, plus one test in `config_test.go` that loads it so the
   example cannot drift from the loader. Spec: §A9.
 - [ ] §A10 — Create `verify.sh` (gofmt + vet + test + scrub + README lint),

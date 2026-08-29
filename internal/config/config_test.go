@@ -134,6 +134,31 @@ units:
 	}
 }
 
+// TestConfigExampleLoad asserts that deploy/fleetgauge.example.yaml parses
+// without error, yields at least four units, and has exactly one unit with
+// AllowRestart == true.  This keeps the shipped example in sync with the
+// loader.
+func TestConfigExampleLoad(t *testing.T) {
+	cfg, err := Load("../../deploy/fleetgauge.example.yaml")
+	if err != nil {
+		t.Fatalf("Load example config: %v", err)
+	}
+
+	if len(cfg.Units) < 4 {
+		t.Errorf("len(Units) = %d, want >= 4", len(cfg.Units))
+	}
+
+	restartCount := 0
+	for _, u := range cfg.Units {
+		if u.AllowRestart {
+			restartCount++
+		}
+	}
+	if restartCount != 1 {
+		t.Errorf("units with AllowRestart = true: %d, want exactly 1", restartCount)
+	}
+}
+
 // TestConfigLoadErrors asserts that malformed YAML and a non-existent path
 // each return an error rather than panicking.
 func TestConfigLoadErrors(t *testing.T) {

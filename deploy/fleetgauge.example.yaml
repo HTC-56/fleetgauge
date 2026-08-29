@@ -1,0 +1,50 @@
+# fleetgauge.example.yaml
+#
+# Copy this file, edit the values, and point fleetgauge at it with the
+# --config flag.  Every key is documented below; remove the comments and
+# fill in your own values when you are ready to run.
+#
+# Public-repo rule: only localhost, 127.0.0.1, or 192.0.2.x addresses
+# appear here — never real hostnames or LAN IPs.
+
+# listen binds the HTTP listener.  Default: 127.0.0.1:8080.
+# fleetgauge uses a single static bearer token with no TLS, so loopback
+# is the safe default.  Change only if you have a reverse proxy handling
+# TLS termination.
+listen: "127.0.0.1:8080"
+
+# bearer_token authenticates every request to fleetgauge.  Replace the
+# placeholder with a strong random value in your own config.  Restart
+# operations also require this token (triple-gated).
+bearer_token: "CHANGE-ME-GENERATE-A-RANDOM-TOKEN"
+
+# poll_interval tells the watcher how often to check unit status.  Must
+# be a positive Go duration (e.g. "5s", "1m", "30s").  Default: 5s.
+poll_interval: "5s"
+
+# journal_lines controls how many lines of journalctl output fleetgauge
+# attaches to each beat's visual layer.  Default: 50.  Set to 0 to
+# omit journal output entirely.
+journal_lines: 50
+
+# units lists every systemd unit (or glob pattern) that fleetgauge
+# watches.  Each entry has:
+#
+#   name:            the unit name or glob pattern (e.g. "app@*.service")
+#   allow_restart:   when true, the restart button appears in the UI
+#                    (still requires bearer token + confirmation gate)
+#
+# Exactly the units you list here are polled and rendered.
+units:
+  # A static service — always on, restartable.
+  - name: "nginx.service"
+    allow_restart: true
+
+  # Another static service — read-only monitoring.
+  - name: "postgresql.service"
+
+  # A glob pattern — fleetgauge expands it at poll time.
+  - name: "worker@*.service"
+
+  # A supporting service — not restartable from the UI.
+  - name: "redis.service"
