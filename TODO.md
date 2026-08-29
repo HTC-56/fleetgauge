@@ -56,7 +56,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §B7 — Create `internal/poller/overview.go` + `overview_test.go`:
   `UnitView` and `Store.Overview(now)`, built only from the Store's exported
   accessors, no new locking. Spec: §B7.
-- [ ] §B8 — Create `internal/metrics/metrics.go`: `Render(store, now) string`,
+- [x] §B8 — Create `internal/metrics/metrics.go`: `Render(store, now) string`,
   the five Prometheus families from SPEC feature 5. Memory is omitted, never
   negative, when accounting is off. Spec: §B8.
 - [ ] §B9 — Create `internal/metrics/metrics_test.go`: 6 assertions — HELP/TYPE
