@@ -84,7 +84,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
   `LogRequests(log, next)` slog middleware logging method/path/status/
   duration_ms. Its ResponseWriter wrapper must implement `http.Flusher` or
   `/events` breaks. 5 assertions. Spec: TASK_PHASE_C.md §C4.
-- [ ] §C5 — Create `internal/server/server.go`: `Handler()` wiring a ServeMux
+- [x] §C5 — Create `internal/server/server.go`: `Handler()` wiring a ServeMux
   for `GET /{$}`, `/healthz`, `/metrics`, `/events`, wrapped in `LogRequests`,
   plus the three thin handlers. `/healthz` is 503 when unpolled. Spec: §C5.
 - [ ] §C6 — Create `internal/server/server_test.go`: 6 httptest assertions on
