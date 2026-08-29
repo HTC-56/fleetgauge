@@ -36,3 +36,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T10:02:13	loop	qwen	no-op	26	3241	11	0	82	- [ ] §E4 — Create `Makefile`: build/test/vet/fmt/verify/demo/dist/clean,
 2026-08-29T10:05:04	loop	qwen	commit	143	15061	53	3	171	- [ ] §E4 — Create `Makefile`: build/test/vet/fmt/verify/demo/dist/clean,
 2026-08-29T10:06:33	loop	qwen	commit	146	16039	53	5	87	- [ ] §E5 — Create `deploy/fleetgauge.service`: the example systemd unit, with
+2026-08-29T10:08:03	loop	qwen	commit	66	11534	27	5	89	- [ ] §E6 — Create `README.md`: what it is, the one-minute demo quickstart, and
