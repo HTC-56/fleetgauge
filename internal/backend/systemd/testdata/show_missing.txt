@@ -1,0 +1,7 @@
+NRestarts=0
+ExecMainStartTimestamp=
+MemoryCurrent=[not set]
+Id=nosuchunit.service
+LoadState=not-found
+ActiveState=inactive
+SubState=dead
