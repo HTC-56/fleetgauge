@@ -6,3 +6,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T07:13:32	loop	qwen	commit	94	15300	37	7	106	- [ ] §A7 — Create `internal/config/config.go`: the YAML fleet config struct,
 2026-08-29T07:15:25	loop	qwen	commit	85	13471	34	4	112	- [ ] §A8 — Create `internal/config/config_test.go`: 6 assertions using YAML
 2026-08-29T07:17:14	loop	qwen	commit	81	13800	33	5	108	- [ ] §A9 — Create `deploy/fleetgauge.example.yaml`, a commented example
+2026-08-29T07:20:09	loop	qwen	commit	111	19073	46	15	174	- [ ] §A10 — Create `verify.sh` (gofmt + vet + test + scrub + README lint),
