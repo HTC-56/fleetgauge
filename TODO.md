@@ -35,3 +35,36 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §A10 — Create `verify.sh` (gofmt + vet + test + scrub + README lint),
   then append a Phase A section to STATUS.md and update ROADMAP rows 1 and 2 to
   SHIPPED, row 8 to PARTIAL, with the two reservations. Spec: §A10.
+
+## Phase B: the poller, the history, and the metrics text — see TASK_PHASE_B.md
+
+The planning lane already shipped `internal/poller/` — `ring.go`, `store.go`,
+`poller.go` and a smoke test (commits `feat(B1)`–`feat(B3)`). Build against
+those; `internal/poller/poller_smoke_test.go` is your pattern file for every
+test task, and it defines `pinnedClock()` — reuse it, never redefine it.
+Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
+`bash scripts/scrub-check.sh`.
+
+- [ ] §B4 — Create `internal/poller/ring_test.go`: 6 assertions on the
+  unexported ring (capacity, oldest-first order, overwrite on wrap, `last()`,
+  zero capacity, fresh slice). Spec: TASK_PHASE_B.md §B4.
+- [ ] §B5 — Create `internal/poller/store_test.go`: 6 assertions driving
+  `Record`/`RecordError` directly — first observation is not a transition,
+  depth cap, snapshot age, error handling. Spec: §B5.
+- [ ] §B6 — Create `internal/poller/poller_test.go`: 6 assertions against
+  `fake.New()` plus one task-local always-failing stub backend. Spec: §B6.
+- [ ] §B7 — Create `internal/poller/overview.go` + `overview_test.go`:
+  `UnitView` and `Store.Overview(now)`, built only from the Store's exported
+  accessors, no new locking. Spec: §B7.
+- [ ] §B8 — Create `internal/metrics/metrics.go`: `Render(store, now) string`,
+  the five Prometheus families from SPEC feature 5. Memory is omitted, never
+  negative, when accounting is off. Spec: §B8.
+- [ ] §B9 — Create `internal/metrics/metrics_test.go`: 6 assertions — HELP/TYPE
+  lines, up 1 vs 0, no memory line for the unknown unit, byte-identical
+  re-render, escaped label. Spec: §B9.
+- [ ] §B10 — Edit `cmd/fleetgauge/main.go`: `-demo` polls the fake fleet five
+  times and prints a `text/tabwriter` overview table; no `-demo` loads the
+  config and polls once. Interim until the page lands. Spec: §B10.
+- [ ] §B11 — Run `bash verify.sh`, append a Phase B section to STATUS.md, flip
+  ROADMAP row 3 to SHIPPED and row 5 to PARTIAL, and record the interim
+  `-demo` table as a reservation. Spec: §B11.

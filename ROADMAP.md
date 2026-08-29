@@ -7,9 +7,9 @@ are the one permitted exception to append-only docs.
 |---|---|---|---|---|
 | 1 | YAML fleet config | SHIPPED | A | loader + commented example §A7–§A9 |
 | 2 | systemd backend behind an interface | SHIPPED | A | interface + systemd backend + parser round-trip + fake backend §A1–§A6 |
-| 3 | Poller + ring-buffer history | NOT BUILT | — | |
+| 3 | Poller + ring-buffer history | PARTIAL | B | poller + ring + store + transition detection shipped §B1–§B3; test suites, overview and demo wiring in flight |
 | 4 | The page (self-contained, SSE) | NOT BUILT | — | hero screenshot |
-| 5 | /metrics (Prometheus text) | NOT BUILT | — | |
+| 5 | /metrics (Prometheus text) | NOT BUILT | — | renderer authored in Phase B §B8; the endpoint needs the HTTP surface |
 | 6 | Triple-gated restart + action ledger | NOT BUILT | — | only mutating verb |
 | 7 | /healthz + /events + structured logs | NOT BUILT | — | |
 | 8 | Demo mode / fake backend | PARTIAL | A | fake backend §A4–§A6 exists and is the test engine; `-demo` cannot serve until the HTTP surface lands |
