@@ -99,6 +99,6 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §C9 — Edit `cmd/fleetgauge/main.go`: both modes serve HTTP instead of
   printing the table. Poller and `Broadcast` in goroutines, `signal.NotifyContext`,
   graceful `Shutdown`. Drop the tabwriter helpers. Spec: §C9.
-- [ ] §C10 — Run `bash verify.sh`, append a Phase C section to STATUS.md, flip
+- [x] §C10 — Run `bash verify.sh`, append a Phase C section to STATUS.md, flip
   ROADMAP rows 4, 5, 7 and 8 to SHIPPED, and record the two new reservations.
   Spec: §C10.

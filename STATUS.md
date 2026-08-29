@@ -32,3 +32,18 @@ cover the fake backend, config round-trips, and scrub-check hygiene.
 **Not yet built:** no HTTP surface, no SSE, no `/metrics`, no `/healthz`.
 The real systemd backend has not been proved on live systemd — that requires
 `scripts/live-check.sh`, which a human runs and does not exist yet.
+
+## Phase C
+
+**Shipped:** the SSE hub and broadcast loop, the self-contained HTML page,
+`/events` (SSE stream), `/healthz` (503 when unpolled, 200 once polled),
+`/metrics` (Prometheus text served from the poller store), the
+`/units/{name}/journal` drawer endpoint, structured request logs via
+`LogRequests` middleware, and `-demo` now serving the page instead of
+printing a table. Tests cover the log middleware, server routes, journal
+endpoint, and hub/event semantics (4–6 assertions each).
+
+**Not yet built:** the triple-gated restart and its action ledger are not
+built, so the product is still entirely read-only; there is no README, no
+Makefile and no CI; and the real systemd backend is still unproved on live
+systemd, because `scripts/live-check.sh` does not exist and a human runs it.
