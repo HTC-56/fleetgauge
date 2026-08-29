@@ -3,3 +3,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T07:07:00	loop	qwen	commit	43	13450	19	7	194	- [ ] §A4 — Create `internal/backend/fake/fake.go`: a `Backend` for a static
 2026-08-29T07:09:33	loop	qwen	commit	91	23824	40	10	151	- [ ] §A5 — Create `internal/backend/fake/fake_test.go`: 6 assertions on the
 2026-08-29T07:11:45	loop	qwen	commit	95	19879	40	8	131	- [ ] §A6 — Edit `internal/backend/fake/fake.go`: add a deterministic `Tick()`
+2026-08-29T07:13:32	loop	qwen	commit	94	15300	37	7	106	- [ ] §A7 — Create `internal/config/config.go`: the YAML fleet config struct,
