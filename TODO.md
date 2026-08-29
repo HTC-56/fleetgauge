@@ -134,3 +134,35 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
   restart control and a 7-wide drawer. Spec: §D9.
 - [x] §D10 — Run `bash verify.sh`, append a Phase D section to STATUS.md, flip
   ROADMAP row 6 to SHIPPED, and record the two new reservations. Spec: §D10.
+
+## Phase E: deploy-grade packaging — see TASK_PHASE_E.md
+
+The last phase. The planning lane already shipped `.github/workflows/ci.yml`,
+`scripts/live-check.sh`, and a fix to `verify.sh`'s README lint (commits
+`feat(E1)`–`fix(E3)`). No new product behaviour ships here — SPEC.md's nine
+features are all built. From §E6 on, `bash verify.sh` also checks that every
+backticked repo path in the README exists; read the lint note at the top of
+TASK_PHASE_E.md before writing any README.
+Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
+`bash scripts/scrub-check.sh`.
+
+- [ ] §E4 — Create `Makefile`: build/test/vet/fmt/verify/demo/dist/clean,
+  default goal `build`, `CGO_ENABLED=0`. Recipe lines need literal TABs.
+  Spec: TASK_PHASE_E.md §E4.
+- [ ] §E5 — Create `deploy/fleetgauge.service`: the example systemd unit, with
+  `StateDirectory=fleetgauge` and four hardening keys. Mirror the comment voice
+  of `deploy/fleetgauge.example.yaml`. Spec: §E5.
+- [ ] §E6 — Create `README.md`: what it is, the one-minute demo quickstart, and
+  the endpoint table. First task the README lint gates. Spec: §E6.
+- [ ] §E7 — Edit `README.md`: real fleet in five, the systemd install, the three
+  restart gates, build and test, and the "what is not proved" section.
+  Spec: §E7.
+- [ ] §E8 — Edit `internal/config/config_test.go`: one test that
+  `deploy/fleetgauge.service`'s `StateDirectory` agrees with the example
+  config's `ledger_path`. Mirror `TestConfigExampleLoad`. Spec: §E8.
+- [ ] §E9 — [CLAUDE] Create `docs/PROCESS.md`: the loop story, with real
+  numbers excerpted from `loop-ledger.tsv` and the null results named.
+  Spec: §E9.
+- [ ] §E10 — Run `bash verify.sh`, append a Phase E section to STATUS.md, flip
+  ROADMAP rows 9 and `docs/PROCESS.md` to SHIPPED, record two reservations.
+  Spec: §E10.
