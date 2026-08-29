@@ -11,3 +11,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T07:37:53	loop	qwen	commit	42	7593	18	3	100	- [ ] §B4 — Create `internal/poller/ring_test.go`: 6 assertions on the
 2026-08-29T07:47:15	loop	qwen	commit	78	14245	32	5	560	- [ ] §B5 — Create `internal/poller/store_test.go`: 6 assertions driving
 2026-08-29T07:57:49	loop	qwen	commit	94	14229	37	5	633	- [ ] §B6 — Create `internal/poller/poller_test.go`: 6 assertions against
+2026-08-29T08:02:21	loop	qwen	commit	110	15394	42	6	271	- [ ] §B7 — Create `internal/poller/overview.go` + `overview_test.go`:
