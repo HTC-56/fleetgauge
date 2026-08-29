@@ -48,3 +48,10 @@ next clause corrects it ("no human has run it on a real systemd system"), so it
 is not a false claim, but "passes locally" reads close to the gated claim in
 item 2. Docs here are append-only, so the loop left it alone. Worth a reword
 before the repo goes public.
+
+## Progress 2026-08-29 (human)
+
+Items 2 and 3 are done: `live-check.sh` ran read-only on a real systemd box
+(6/6, systemd 255 — verdict recorded in STATUS.md) and `docs/hero.png` is
+committed and referenced from the README. Items 1 (publish) and 4 (new scope)
+remain open.

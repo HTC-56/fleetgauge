@@ -72,3 +72,30 @@ restart-gate section, the unit-file drift test between `fleetgauge.service` and
 real systemd backend remains unproved and no claim about it appears in the docs;
 and the hero screenshot for the page was never produced — it needs a browser and
 a human, neither of which the loop has.
+
+## Human proofs (2026-08-29)
+
+Both "Not yet true" items from Phase E are now true, done by hand outside the
+loop.
+
+**`live-check.sh` on a real systemd box** — read-only run, all clear:
+
+    === verdict ===
+      6 passed, 0 failed
+      host:  systemd 255 (255.4-1ubuntu8.16)
+      unit:  systemd-journald.service
+
+    checks: GET / served the page; /metrics reported the unit;
+    parsed ActiveState matched systemctl (active); the journal drawer
+    returned lines; restart without a token was 401; restart of a
+    non-opted-in unit was 403.
+
+    live-check: all clear on real systemd.
+
+On that evidence the real-systemd claim is written down. The mutating restart
+path was deliberately not exercised — the run was read-only; the script's
+`--restart` opt-in stays unused until someone names a unit they mean it for.
+
+**The hero screenshot** — `docs/hero.png`, taken from `-demo` (served with
+`-addr 127.0.0.1:8083`; the default :8080 was occupied on the box). Referenced
+from the README.

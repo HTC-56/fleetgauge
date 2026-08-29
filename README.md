@@ -7,6 +7,8 @@ Ops sensibility as a work sample: restart counts, memory, state transitions,
 journal tails, and an interface seam that makes systemd itself swappable in
 tests.
 
+![fleetgauge — a demo fleet with one failed unit](docs/hero.png)
+
 ## What you need
 
 Go 1.27+. systemd is **not** required for the demo or the test suite — the
