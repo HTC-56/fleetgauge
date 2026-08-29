@@ -62,7 +62,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §B9 — Create `internal/metrics/metrics_test.go`: 6 assertions — HELP/TYPE
   lines, up 1 vs 0, no memory line for the unknown unit, byte-identical
   re-render, escaped label. Spec: §B9.
-- [ ] §B10 — Edit `cmd/fleetgauge/main.go`: `-demo` polls the fake fleet five
+- [x] §B10 — Edit `cmd/fleetgauge/main.go`: `-demo` polls the fake fleet five
   times and prints a `text/tabwriter` overview table; no `-demo` loads the
   config and polls once. Interim until the page lands. Spec: §B10.
 - [ ] §B11 — Run `bash verify.sh`, append a Phase B section to STATUS.md, flip
