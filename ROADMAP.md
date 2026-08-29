@@ -8,9 +8,9 @@ are the one permitted exception to append-only docs.
 | 1 | YAML fleet config | SHIPPED | A | loader + commented example §A7–§A9 |
 | 2 | systemd backend behind an interface | SHIPPED | A | interface + systemd backend + parser round-trip + fake backend §A1–§A6 |
 | 3 | Poller + ring-buffer history | SHIPPED | B | poller + ring + store + transition detection + overview + demo wiring §B1–§B10 |
-| 4 | The page (self-contained, SSE) | SHIPPED | C | page + SSE hub + fleet payload + `/events` + journal + request logs §C1–§C9 |
+| 4 | The page (self-contained, SSE) | SHIPPED | C | page + SSE hub + fleet payload + `/events` + journal + request logs + restart control §C1–§C9, §D9 |
 | 5 | /metrics (Prometheus text) | SHIPPED | B, C | renderer §B8–§B9; route served from poller store §C5 |
-| 6 | Triple-gated restart + action ledger | PARTIAL | D | ledger + handler + page control §D1–§D3; tests, config key and wiring are §D4–§D8 |
+| 6 | Triple-gated restart + action ledger | SHIPPED | D | ledger + handler + page control §D1–§D9; config key, tests, and wiring §D4–§D8 |
 | 7 | /healthz + /events + structured logs | SHIPPED | C | `/events` broadcast loop §C2; `/healthz` + request logs §C4–§C5; journal §C7 |
 | 8 | Demo mode / fake backend | SHIPPED | A, C | fake backend §A4–§A6; `-demo` serves the page §C9 |
 | 9 | Deploy-grade packaging (static binary, Makefile, dual-arch CI, unit file, quickstart) | NOT BUILT | — | live-check.sh not in CI |

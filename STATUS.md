@@ -43,7 +43,19 @@ The real systemd backend has not been proved on live systemd — that requires
 printing a table. Tests cover the log middleware, server routes, journal
 endpoint, and hub/event semantics (4–6 assertions each).
 
-**Not yet built:** the triple-gated restart and its action ledger are not
-built, so the product is still entirely read-only; there is no README, no
-Makefile and no CI; and the real systemd backend is still unproved on live
-systemd, because `scripts/live-check.sh` does not exist and a human runs it.
+**Not yet built:** there is no README, no Makefile and no CI; and the real
+systemd backend is still unproved on live systemd, because
+`scripts/live-check.sh` does not exist and a human runs it.
+
+## Phase D
+
+**Shipped:** the append-only JSONL action ledger, the triple-gated
+`POST /units/{name}/restart` (token, per-unit opt-in, ledger-before-execute),
+the `ledger_path` config key and the rule that an `allow_restart` unit
+requires a bearer token, the restart control on the page, and demo mode's
+`-token` flag. Tests cover the ledger, restart handler, and page
+self-containment (6 assertions each).
+
+**Not yet built:** there is no README, no Makefile and no CI; and the real
+systemd backend is still unproved on live systemd, because
+`scripts/live-check.sh` does not exist and a human runs it.

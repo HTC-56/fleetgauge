@@ -132,5 +132,5 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §D9 — Create `internal/page/page_test.go`: 6 assertions that the page
   stays self-contained (no http://, no `<link`, no @import) and carries the
   restart control and a 7-wide drawer. Spec: §D9.
-- [ ] §D10 — Run `bash verify.sh`, append a Phase D section to STATUS.md, flip
+- [x] §D10 — Run `bash verify.sh`, append a Phase D section to STATUS.md, flip
   ROADMAP row 6 to SHIPPED, and record the two new reservations. Spec: §D10.
