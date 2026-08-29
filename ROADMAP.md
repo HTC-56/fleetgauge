@@ -8,11 +8,11 @@ are the one permitted exception to append-only docs.
 | 1 | YAML fleet config | SHIPPED | A | loader + commented example §A7–§A9 |
 | 2 | systemd backend behind an interface | SHIPPED | A | interface + systemd backend + parser round-trip + fake backend §A1–§A6 |
 | 3 | Poller + ring-buffer history | SHIPPED | B | poller + ring + store + transition detection + overview + demo wiring §B1–§B10 |
-| 4 | The page (self-contained, SSE) | NOT BUILT | — | hero screenshot |
-| 5 | /metrics (Prometheus text) | PARTIAL | B | renderer built and tested §B8–§B9; the endpoint needs the HTTP surface |
+| 4 | The page (self-contained, SSE) | PARTIAL | C | page + SSE hub + fleet payload shipped `feat(C1)`–`feat(C3)`; the mux that serves it is §C5 |
+| 5 | /metrics (Prometheus text) | PARTIAL | B, C | renderer built and tested §B8–§B9; the route lands in §C5 |
 | 6 | Triple-gated restart + action ledger | NOT BUILT | — | only mutating verb |
-| 7 | /healthz + /events + structured logs | NOT BUILT | — | |
-| 8 | Demo mode / fake backend | PARTIAL | A | fake backend §A4–§A6 exists and is the test engine; `-demo` cannot serve until the HTTP surface lands |
+| 7 | /healthz + /events + structured logs | PARTIAL | C | `/events` + broadcast loop shipped `feat(C2)`; `/healthz` and request logs are §C4–§C5 |
+| 8 | Demo mode / fake backend | PARTIAL | A, C | fake backend §A4–§A6 is the test engine; `-demo` starts serving the page at §C9 |
 | 9 | Deploy-grade packaging (static binary, Makefile, dual-arch CI, unit file, quickstart) | NOT BUILT | — | live-check.sh not in CI |
 | — | docs/PROCESS.md (the loop story) | NOT BUILT | — | written near the end, when there is a ledger to excerpt |
 

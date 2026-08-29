@@ -68,3 +68,37 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §B11 — Run `bash verify.sh`, append a Phase B section to STATUS.md, flip
   ROADMAP row 3 to SHIPPED and row 5 to PARTIAL, and record the interim
   `-demo` table as a reservation. Spec: §B11.
+
+## Phase C: the HTTP surface — see TASK_PHASE_C.md
+
+The planning lane already shipped `internal/server/` — `hub.go`, `fleet.go`,
+`sse.go`, `doc.go` — and `internal/page/` (commits `feat(C1)`–`feat(C3)`).
+Build against those; `internal/server/server_smoke_test.go` is your pattern
+file for every test task, and it defines `pinnedClock()`, `newTestServer()`
+and `waitFor()` — reuse them, never redefine them. `doc.go` already holds the
+package comment; do not write a second one.
+Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
+`bash scripts/scrub-check.sh`.
+
+- [ ] §C4 — Create `internal/server/log.go` + `log_test.go`: a
+  `LogRequests(log, next)` slog middleware logging method/path/status/
+  duration_ms. Its ResponseWriter wrapper must implement `http.Flusher` or
+  `/events` breaks. 5 assertions. Spec: TASK_PHASE_C.md §C4.
+- [ ] §C5 — Create `internal/server/server.go`: `Handler()` wiring a ServeMux
+  for `GET /{$}`, `/healthz`, `/metrics`, `/events`, wrapped in `LogRequests`,
+  plus the three thin handlers. `/healthz` is 503 when unpolled. Spec: §C5.
+- [ ] §C6 — Create `internal/server/server_test.go`: 6 httptest assertions on
+  the four routes — page HTML, metrics text, healthz ok vs degraded, 404 on an
+  unknown path, 405 on POST. Spec: §C6.
+- [ ] §C7 — Create `internal/server/journal.go` + `journal_test.go` and add the
+  `GET /units/{name}/journal` route to `Handler()`. 400/503/502 error paths;
+  lines marshal as `[]`, never `null`. 4 assertions. Spec: §C7.
+- [ ] §C8 — Create `internal/server/hub_test.go`: 6 assertions on the hub and
+  `/events` — two subscribers, double cancel, drop-on-slow, Close semantics,
+  context cancel, transition events. Spec: §C8.
+- [ ] §C9 — Edit `cmd/fleetgauge/main.go`: both modes serve HTTP instead of
+  printing the table. Poller and `Broadcast` in goroutines, `signal.NotifyContext`,
+  graceful `Shutdown`. Drop the tabwriter helpers. Spec: §C9.
+- [ ] §C10 — Run `bash verify.sh`, append a Phase C section to STATUS.md, flip
+  ROADMAP rows 4, 5, 7 and 8 to SHIPPED, and record the two new reservations.
+  Spec: §C10.
