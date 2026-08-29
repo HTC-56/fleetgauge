@@ -16,3 +16,5 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T08:12:07	loop	qwen	no-op	120	24949	47	12	415	- [ ] §B9 — Create `internal/metrics/metrics_test.go`: 6 assertions — HELP/TYPE
 2026-08-29T08:27:07	loop	qwen	commit	175	29308	67	14	899	- [ ] §B10 — Edit `cmd/fleetgauge/main.go`: `-demo` polls the fake fleet five
 2026-08-29T08:28:44	loop	qwen	commit	148	17833	56	10	96	- [ ] §B11 — Run `bash verify.sh`, append a Phase B section to STATUS.md, flip
+2026-08-29T08:39:01	plan	claude	commit	75	151758	43	11	615	plan next phase
+2026-08-29T08:42:57	loop	qwen	commit	56	12374	20	5	245	- [ ] §C4 — Create `internal/server/log.go` + `log_test.go`: a
