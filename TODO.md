@@ -80,7 +80,7 @@ package comment; do not write a second one.
 Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 `bash scripts/scrub-check.sh`.
 
-- [ ] §C4 — Create `internal/server/log.go` + `log_test.go`: a
+- [x] §C4 — Create `internal/server/log.go` + `log_test.go`: a
   `LogRequests(log, next)` slog middleware logging method/path/status/
   duration_ms. Its ResponseWriter wrapper must implement `http.Flusher` or
   `/events` breaks. 5 assertions. Spec: TASK_PHASE_C.md §C4.
