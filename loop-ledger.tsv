@@ -1,0 +1,3 @@
+time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
+2026-08-29T07:03:18	plan	claude	commit	84	92387	40	17	449	plan next phase
+2026-08-29T07:07:00	loop	qwen	commit	43	13450	19	7	194	- [ ] §A4 — Create `internal/backend/fake/fake.go`: a `Backend` for a static
