@@ -20,7 +20,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §A5 — Create `internal/backend/fake/fake_test.go`: 6 assertions on the
   static fleet (count, glob List, missing unit, Show ordering, Restart).
   Mirror `internal/backend/systemd/parse_test.go`. Spec: §A5.
-- [ ] §A6 — Edit `internal/backend/fake/fake.go`: add a deterministic `Tick()`
+- [x] §A6 — Edit `internal/backend/fake/fake.go`: add a deterministic `Tick()`
   (no rand, no clock) so `flappy.service` flaps and `wedged.service` stays
   failed; add the 5 drift tests. Spec: §A6.
 - [ ] §A7 — Create `internal/config/config.go`: the YAML fleet config struct,
