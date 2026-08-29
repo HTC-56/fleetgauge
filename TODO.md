@@ -45,7 +45,7 @@ test task, and it defines `pinnedClock()` — reuse it, never redefine it.
 Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 `bash scripts/scrub-check.sh`.
 
-- [ ] §B4 — Create `internal/poller/ring_test.go`: 6 assertions on the
+- [x] §B4 — Create `internal/poller/ring_test.go`: 6 assertions on the
   unexported ring (capacity, oldest-first order, overwrite on wrap, `last()`,
   zero capacity, fresh slice). Spec: TASK_PHASE_B.md §B4.
 - [ ] §B5 — Create `internal/poller/store_test.go`: 6 assertions driving
