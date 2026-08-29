@@ -120,7 +120,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §D5 — Create `internal/server/restart_test.go`: 6 assertions on the three
   gates — 503 unconfigured, 401 bad token, 403 not opted in, 200 plus two
   ledger lines, failing ledger refuses, 405 on GET. Spec: §D5.
-- [ ] §D6 — Edit `internal/config/config.go`: add the `ledger_path` key with
+- [x] §D6 — Edit `internal/config/config.go`: add the `ledger_path` key with
   default `ledger.jsonl`, plus one rule — `allow_restart` needs a
   `bearer_token`. 3 tests in `config_test.go`. Spec: §D6.
 - [ ] §D7 — Edit `deploy/fleetgauge.example.yaml`: document `ledger_path`, fix

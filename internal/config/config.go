@@ -23,6 +23,7 @@ type Unit struct {
 type Config struct {
 	Listen          string `yaml:"listen"`
 	BearerToken     string `yaml:"bearer_token"`
+	LedgerPath      string `yaml:"ledger_path"`
 	PollIntervalRaw string `yaml:"poll_interval"`
 	PollInterval    time.Duration
 	JournalLines    int    `yaml:"journal_lines"`
@@ -58,6 +59,9 @@ func Load(path string) (*Config, error) {
 	if c.JournalLines == 0 {
 		c.JournalLines = 50
 	}
+	if c.LedgerPath == "" {
+		c.LedgerPath = "ledger.jsonl"
+	}
 
 	// Validate.
 	if len(c.Units) == 0 {
@@ -68,6 +72,11 @@ func Load(path string) (*Config, error) {
 	}
 	if c.JournalLines < 0 {
 		return nil, fmt.Errorf("%s: journal_lines must not be negative, got %d", path, c.JournalLines)
+	}
+	for _, u := range c.Units {
+		if u.AllowRestart && c.BearerToken == "" {
+			return nil, fmt.Errorf("%s: bearer_token must be set when %s allows restart", path, u.Name)
+		}
 	}
 
 	return &c, nil

@@ -3,6 +3,7 @@ package config
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -178,5 +179,59 @@ units:
 	_, err = Load("/no/such/file/nonexistent.yaml")
 	if err == nil {
 		t.Fatal("Load: expected error for missing file, got nil")
+	}
+}
+
+// TestConfigLedgerPathDefault asserts that a config with no ledger_path gets
+// the default "ledger.jsonl".
+func TestConfigLedgerPathDefault(t *testing.T) {
+	yaml := `
+units:
+  - name: "app.service"
+`
+	cfg, err := Load(writeYAML(t, "defaults.yaml", yaml))
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+
+	if cfg.LedgerPath != "ledger.jsonl" {
+		t.Errorf("LedgerPath = %q, want %q", cfg.LedgerPath, "ledger.jsonl")
+	}
+}
+
+// TestConfigLedgerPathCustom asserts that a config that sets ledger_path keeps
+// the value it was given.
+func TestConfigLedgerPathCustom(t *testing.T) {
+	yaml := `
+ledger_path: "/var/lib/fleetgauge/ledger.jsonl"
+units:
+  - name: "app.service"
+`
+	cfg, err := Load(writeYAML(t, "custom.yaml", yaml))
+	if err != nil {
+		t.Fatalf("Load: %v", err)
+	}
+
+	if cfg.LedgerPath != "/var/lib/fleetgauge/ledger.jsonl" {
+		t.Errorf("LedgerPath = %q, want %q", cfg.LedgerPath, "/var/lib/fleetgauge/ledger.jsonl")
+	}
+}
+
+// TestConfigAllowRestartNoBearerToken asserts that a unit with allow_restart:
+// true but no bearer_token fails to load, and the error message mentions
+// bearer_token.
+func TestConfigAllowRestartNoBearerToken(t *testing.T) {
+	yaml := `
+units:
+  - name: "flaky.service"
+    allow_restart: true
+`
+	_, err := Load(writeYAML(t, "no-token.yaml", yaml))
+	if err == nil {
+		t.Fatal("Load: expected error for allow_restart without bearer_token, got nil")
+	}
+
+	if !strings.Contains(err.Error(), "bearer_token") {
+		t.Errorf("error = %q, want it to mention bearer_token", err.Error())
 	}
 }
