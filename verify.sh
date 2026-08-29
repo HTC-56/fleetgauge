@@ -59,14 +59,32 @@ else
   report "scrub-check" "fail"
 fi
 
-# 5. README-quickstart lint: every file path in backticks inside README.md
-#    must actually exist. Skip if README.md does not exist yet.
+# 5. README-quickstart lint: every repo path named in backticks inside
+#    README.md must actually exist. Skip if README.md does not exist yet.
+#
+#    Most backticked spans in a quickstart are COMMANDS, not paths -- so split
+#    each span into words and keep only the words that really are a path into
+#    this repo. Everything else is skipped by shape: flags (-demo), URLs,
+#    Go package patterns (./...), absolute deploy paths (/etc/...), route
+#    templates ({name}), and module paths whose first segment is a domain
+#    (gopkg.in/yaml.v3). Without that filter the lint reads "go test ./..."
+#    as three missing files and fails every README that shows a command.
 if [ -f "README.md" ]; then
-  # Extract file paths from backticks (e.g. `scripts/foo.sh`)
-  paths=$(grep -oE '`[^`]+\.sh|`[^`]+\.go|`[^`]+\.yaml|`[^`]+\.md|`[^`]+/[^`]*`' README.md \
-    | sed 's/^`//;s/`$//' | sort -u)
   readme_ok=1
-  for p in $paths; do
+  spans=$(grep -oE '`[^`]+`' README.md | sed 's/^`//;s/`$//')
+  for p in $spans; do
+    case "$p" in
+      -* | /* | *://* | *...* | *'{'* | *'*'* | *'$'* | *'~'*) continue ;;
+    esac
+    p=${p#./}
+    case "$p" in
+      */*)
+        # A first segment with a dot in it is a domain, not a directory.
+        case "${p%%/*}" in *.*) continue ;; esac
+        ;;
+      *.sh | *.go | *.yaml | *.yml | *.md | *.html) ;;
+      *) continue ;;
+    esac
     if [ ! -e "$p" ]; then
       printf '  README lint: missing %s\n' "$p" >&2
       readme_ok=0
