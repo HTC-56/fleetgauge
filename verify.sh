@@ -42,9 +42,13 @@ else
 fi
 
 # 3. go test
-if go test ./... 2>&1 | tail -1; then
+#    Deliberately unpiped: `go test ./... | tail -1` yields the exit status of
+#    tail, which is always 0, so a red suite was reported as a pass. Capture the
+#    output and print it only when the suite actually fails.
+if test_out=$(go test ./... 2>&1); then
   report "go test" "pass"
 else
+  printf '%s\n' "$test_out" >&2
   report "go test" "fail"
 fi
 
