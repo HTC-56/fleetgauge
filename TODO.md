@@ -160,7 +160,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §E8 — Edit `internal/config/config_test.go`: one test that
   `deploy/fleetgauge.service`'s `StateDirectory` agrees with the example
   config's `ledger_path`. Mirror `TestConfigExampleLoad`. Spec: §E8.
-- [ ] §E9 — [CLAUDE] Create `docs/PROCESS.md`: the loop story, with real
+- [x] §E9 — [CLAUDE] Create `docs/PROCESS.md`: the loop story, with real
   numbers excerpted from `loop-ledger.tsv` and the null results named.
   Spec: §E9.
 - [x] §E10 — Run `bash verify.sh`, append a Phase E section to STATUS.md, flip
