@@ -26,7 +26,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §A7 — Create `internal/config/config.go`: the YAML fleet config struct,
   `Load`, three defaults and three validation errors. First file to import
   `gopkg.in/yaml.v3` — read the §A7 note on `go mod tidy`. Spec: §A7.
-- [ ] §A8 — Create `internal/config/config_test.go`: 6 assertions using YAML
+- [x] §A8 — Create `internal/config/config_test.go`: 6 assertions using YAML
   fixtures written into `t.TempDir()` — round-trip, defaults, duration
   parsing, and three error cases. Spec: §A8.
 - [ ] §A9 — Create `deploy/fleetgauge.example.yaml`, a commented example
