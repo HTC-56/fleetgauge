@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>fleetgauge</title>
+<style>
+  /* System font stack only: no web fonts, no CDN, no external request of any
+     kind. The whole page is this one file. */
+  :root {
+    --bg: #12151a;
+    --panel: #1a1e26;
+    --panel-2: #212632;
+    --line: #2c3340;
+    --fg: #dfe4ec;
+    --dim: #8a93a3;
+    --active: #3fb950;
+    --failed: #f85149;
+    --other: #d29922;
+    --accent: #58a6ff;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--fg);
+    font: 14px/1.5 ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+  }
+  code, .mono, td.num, .journal {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  header {
+    display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap;
+    padding: 18px 22px; border-bottom: 1px solid var(--line); background: var(--panel);
+  }
+  h1 { margin: 0; font-size: 17px; letter-spacing: .3px; font-weight: 600; }
+  h1 span { color: var(--dim); font-weight: 400; }
+  .tallies { display: flex; gap: 14px; margin-left: auto; align-items: center; }
+  .tally { font-size: 13px; color: var(--dim); }
+  .tally b { color: var(--fg); font-variant-numeric: tabular-nums; }
+  .tally.active b { color: var(--active); }
+  .tally.failed b { color: var(--failed); }
+  .tally.other  b { color: var(--other); }
+
+  #conn { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--dim); }
+  #conn::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--dim);
+  }
+  #conn.live::before { background: var(--active); }
+  #conn.down::before { background: var(--failed); }
+
+  main { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 18px; padding: 18px 22px; }
+  @media (max-width: 900px) { main { grid-template-columns: minmax(0, 1fr); } }
+
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  section > h2 {
+    margin: 0; padding: 10px 14px; font-size: 12px; font-weight: 600;
+    text-transform: uppercase; letter-spacing: .7px; color: var(--dim);
+    border-bottom: 1px solid var(--line);
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+  th {
+    text-align: left; font-size: 11px; font-weight: 600; text-transform: uppercase;
+    letter-spacing: .6px; color: var(--dim); padding: 8px 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  td { padding: 9px 14px; border-bottom: 1px solid var(--line); }
+  td.num { text-align: right; font-variant-numeric: tabular-nums; }
+  tr.unit { cursor: pointer; }
+  tr.unit:hover td { background: var(--panel-2); }
+  tr.unit.open td { background: var(--panel-2); }
+  tbody tr:last-child td { border-bottom: none; }
+
+  .pill {
+    display: inline-block; padding: 1px 8px; border-radius: 999px;
+    font-size: 11px; font-weight: 600; letter-spacing: .3px;
+    border: 1px solid transparent;
+  }
+  .pill.active { color: var(--active); border-color: #22482c; background: #12281a; }
+  .pill.failed { color: var(--failed); border-color: #5a2422; background: #2a1615; }
+  .pill.other  { color: var(--other);  border-color: #4d3c14; background: #26200e; }
+  .sub { color: var(--dim); font-size: 12px; margin-left: 6px; }
+  .missing { color: var(--dim); font-style: italic; }
+
+  tr.flash td { animation: flash 1.4s ease-out; }
+  @keyframes flash { from { background: #24303f; } to { background: transparent; } }
+
+  tr.drawer td { padding: 0; background: var(--bg); }
+  .journal {
+    margin: 0; padding: 10px 14px; max-height: 260px; overflow: auto;
+    font-size: 12px; color: var(--dim); white-space: pre-wrap; word-break: break-all;
+  }
+
+  ol.timeline { list-style: none; margin: 0; padding: 6px 0; max-height: 70vh; overflow: auto; }
+  ol.timeline li { padding: 6px 14px; border-bottom: 1px solid var(--line); font-size: 12px; }
+  ol.timeline li:last-child { border-bottom: none; }
+  .tl-unit { display: block; color: var(--fg); }
+  .tl-move { color: var(--dim); }
+  .tl-move b.to-active { color: var(--active); font-weight: 600; }
+  .tl-move b.to-failed { color: var(--failed); font-weight: 600; }
+  .tl-move b.to-other  { color: var(--other);  font-weight: 600; }
+
+  .empty { padding: 14px; color: var(--dim); font-size: 13px; }
+  footer { padding: 6px 22px 22px; color: var(--dim); font-size: 12px; }
+  .err { margin: 0 22px 12px; padding: 8px 12px; border-radius: 6px;
+         background: #2a1615; border: 1px solid #5a2422; color: var(--failed); font-size: 13px; }
+  .err[hidden] { display: none; }
+</style>
+</head>
+<body>
+<header>
+  <h1>fleetgauge <span id="age">—</span></h1>
+  <div class="tallies">
+    <span class="tally">units <b id="t-total">0</b></span>
+    <span class="tally active">active <b id="t-active">0</b></span>
+    <span class="tally failed">failed <b id="t-failed">0</b></span>
+    <span class="tally other">other <b id="t-other">0</b></span>
+    <span id="conn">connecting</span>
+  </div>
+</header>
+
+<p class="err" id="err" hidden></p>
+
+<main>
+  <section>
+    <h2>Units</h2>
+    <table>
+      <thead>
+        <tr>
+          <th>Unit</th><th>State</th>
+          <th class="num">Restarts</th><th class="num">Memory</th>
+          <th class="num">Uptime</th><th class="num">Changes</th>
+        </tr>
+      </thead>
+      <tbody id="units"></tbody>
+    </table>
+    <p class="empty" id="units-empty">Waiting for the first poll…</p>
+  </section>
+
+  <section>
+    <h2>Transitions</h2>
+    <ol class="timeline" id="timeline"></ol>
+    <p class="empty" id="tl-empty">No state changes observed yet.</p>
+  </section>
+</main>
+
+<footer id="foot"></footer>
+
+<script>
+(function () {
+  "use strict";
+
+  var $ = function (id) { return document.getElementById(id); };
+  var open = Object.create(null);   // unit name -> drawer is open
+  var lastFleet = null;
+
+  // ---- formatting -------------------------------------------------------
+
+  var MEMORY_UNKNOWN = -1;          // matches backend.MemoryUnknown
+
+  function fmtBytes(n) {
+    if (n === MEMORY_UNKNOWN || n < 0) { return "—"; }
+    var units = ["B", "KiB", "MiB", "GiB", "TiB"], i = 0, v = n;
+    while (v >= 1024 && i < units.length - 1) { v /= 1024; i++; }
+    return (i === 0 ? v : v.toFixed(1)) + " " + units[i];
+  }
+
+  function fmtDuration(sec) {
+    sec = Math.floor(sec);
+    if (sec <= 0) { return "—"; }
+    var d = Math.floor(sec / 86400), h = Math.floor(sec % 86400 / 3600),
+        m = Math.floor(sec % 3600 / 60), s = sec % 60;
+    if (d) { return d + "d " + h + "h"; }
+    if (h) { return h + "h " + m + "m"; }
+    if (m) { return m + "m " + s + "s"; }
+    return s + "s";
+  }
+
+  function fmtAgo(iso) {
+    var t = Date.parse(iso);
+    if (isNaN(t)) { return iso; }
+    var sec = Math.max(0, Math.round((Date.now() - t) / 1000));
+    if (sec < 60) { return sec + "s ago"; }
+    return fmtDuration(sec) + " ago";
+  }
+
+  function stateClass(state) {
+    if (state === "active") { return "active"; }
+    if (state === "failed") { return "failed"; }
+    return "other";
+  }
+
+  // ---- rendering --------------------------------------------------------
+  //
+  // Everything is built with createElement/textContent. Unit names come from
+  // the host and are never interpolated into HTML.
+
+  function cell(row, text, cls) {
+    var td = document.createElement("td");
+    if (cls) { td.className = cls; }
+    td.textContent = text;
+    row.appendChild(td);
+    return td;
+  }
+
+  function unitRow(u) {
+    var tr = document.createElement("tr");
+    tr.className = "unit";
+    tr.dataset.unit = u.name;
+    if (open[u.name]) { tr.classList.add("open"); }
+
+    var name = cell(tr, u.name);
+    if (!u.found) {
+      var tag = document.createElement("span");
+      tag.className = "missing";
+      tag.textContent = "  not loaded";
+      name.appendChild(tag);
+    }
+
+    var td = document.createElement("td");
+    var pill = document.createElement("span");
+    pill.className = "pill " + stateClass(u.active_state);
+    pill.textContent = u.active_state || "unknown";
+    td.appendChild(pill);
+    if (u.sub_state && u.sub_state !== u.active_state) {
+      var sub = document.createElement("span");
+      sub.className = "sub";
+      sub.textContent = u.sub_state;
+      td.appendChild(sub);
+    }
+    tr.appendChild(td);
+
+    cell(tr, String(u.restarts), "num");
+    cell(tr, fmtBytes(u.memory_bytes), "num");
+    cell(tr, fmtDuration(u.uptime_seconds), "num");
+    cell(tr, String(u.transitions), "num");
+
+    tr.addEventListener("click", function () { toggleDrawer(u.name); });
+    return tr;
+  }
+
+  function drawerRow(unit) {
+    var tr = document.createElement("tr");
+    tr.className = "drawer";
+    tr.dataset.drawer = unit;
+    var td = document.createElement("td");
+    td.colSpan = 6;
+    var pre = document.createElement("pre");
+    pre.className = "journal";
+    pre.textContent = "Loading journal…";
+    td.appendChild(pre);
+    tr.appendChild(td);
+    loadJournal(unit, pre);
+    return tr;
+  }
+
+  function toggleDrawer(unit) {
+    open[unit] = !open[unit];
+    if (lastFleet) { renderUnits(lastFleet.units); }
+  }
+
+  function loadJournal(unit, pre) {
+    fetch("/units/" + encodeURIComponent(unit) + "/journal")
+      .then(function (r) {
+        if (!r.ok) { throw new Error("HTTP " + r.status); }
+        return r.json();
+      })
+      .then(function (data) {
+        var lines = (data && data.lines) || [];
+        pre.textContent = lines.length ? lines.join("\n") : "(journal empty)";
+      })
+      .catch(function (e) {
+        pre.textContent = "journal unavailable: " + e.message;
+      });
+  }
+
+  function renderUnits(units) {
+    var tbody = $("units");
+    tbody.textContent = "";
+    units.forEach(function (u) {
+      tbody.appendChild(unitRow(u));
+      if (open[u.name]) { tbody.appendChild(drawerRow(u.name)); }
+    });
+    $("units-empty").hidden = units.length > 0;
+  }
+
+  function renderTimeline(trs) {
+    var ol = $("timeline");
+    ol.textContent = "";
+    trs.forEach(function (t) {
+      var li = document.createElement("li");
+      var unit = document.createElement("span");
+      unit.className = "tl-unit";
+      unit.textContent = t.unit;
+      li.appendChild(unit);
+
+      var move = document.createElement("span");
+      move.className = "tl-move";
+      move.appendChild(document.createTextNode(t.from + " → "));
+      var to = document.createElement("b");
+      to.className = "to-" + stateClass(t.to);
+      to.textContent = t.to;
+      move.appendChild(to);
+      move.appendChild(document.createTextNode("  ·  " + fmtAgo(t.at)));
+      li.appendChild(move);
+      ol.appendChild(li);
+    });
+    $("tl-empty").hidden = trs.length > 0;
+  }
+
+  function render(f) {
+    lastFleet = f;
+    $("t-total").textContent = f.counts.total;
+    $("t-active").textContent = f.counts.active;
+    $("t-failed").textContent = f.counts.failed;
+    $("t-other").textContent = f.counts.other;
+    $("age").textContent = "· snapshot " + Math.round(f.snapshot_age_seconds) + "s old";
+
+    var err = $("err");
+    if (f.last_error) {
+      err.textContent = "last poll failed: " + f.last_error;
+      err.hidden = false;
+    } else {
+      err.hidden = true;
+    }
+
+    renderUnits(f.units);
+    renderTimeline(f.transitions);
+    $("foot").textContent =
+      f.polls + " polls, " + f.failures + " failed · generated " + f.generated_at;
+  }
+
+  function flash(unit) {
+    var row = document.querySelector('tr.unit[data-unit="' + CSS.escape(unit) + '"]');
+    if (!row) { return; }
+    row.classList.remove("flash");
+    void row.offsetWidth;            // restart the animation
+    row.classList.add("flash");
+  }
+
+  // ---- the stream -------------------------------------------------------
+  //
+  // EventSource reconnects on its own; the only job here is to keep the
+  // indicator honest about whether the page is live or stale.
+
+  function conn(state, text) {
+    var el = $("conn");
+    el.className = state;
+    el.textContent = text;
+  }
+
+  var es = new EventSource("/events");
+  es.addEventListener("open", function () { conn("live", "live"); });
+  es.addEventListener("fleet", function (e) {
+    conn("live", "live");
+    try { render(JSON.parse(e.data)); } catch (_) { /* ignore a torn frame */ }
+  });
+  es.addEventListener("transition", function (e) {
+    try { flash(JSON.parse(e.data).unit); } catch (_) { /* ignore */ }
+  });
+  es.addEventListener("error", function () { conn("down", "reconnecting…"); });
+}());
+</script>
+</body>
+</html>
