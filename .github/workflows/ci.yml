@@ -1,0 +1,88 @@
+# CI — the gates, then both release architectures.
+#
+# Two jobs, in this order:
+#
+#   gates  runs verify.sh, which is the exact command a developer runs
+#          locally: gofmt, go vet, go test, scrub-check, README lint. CI and
+#          the workstation must never disagree about what green means, so CI
+#          calls the script rather than re-listing the steps here.
+#   build  cross-compiles the static binary for linux/amd64 and linux/arm64.
+#
+# The suite runs against the FAKE backend only (SPEC.md: "CI runs against the
+# fake backend only"). Nothing here touches systemd, and scripts/live-check.sh
+# is deliberately absent — it needs a live systemd box and a human to read its
+# output, so it is not a CI step and must never become one.
+
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  gates:
+    name: gates (gofmt, vet, test, scrub, README)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # scrub-check.sh enumerates files with `git ls-files`, so it needs a
+          # real repository, not an exported tarball.
+          fetch-depth: 1
+
+      - uses: actions/setup-go@v5
+        with:
+          # Read the toolchain from go.mod so there is one source of truth for
+          # the Go version.
+          go-version-file: go.mod
+          check-latest: true
+
+      - name: verify.sh
+        run: bash verify.sh
+
+  build:
+    name: build linux/${{ matrix.goarch }}
+    runs-on: ubuntu-latest
+    needs: gates
+    strategy:
+      fail-fast: false
+      matrix:
+        goarch: [amd64, arm64]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version-file: go.mod
+          check-latest: true
+
+      - name: build static binary
+        env:
+          CGO_ENABLED: "0"
+          GOOS: linux
+          GOARCH: ${{ matrix.goarch }}
+        # -trimpath keeps build paths out of a public binary; -s -w drops the
+        # symbol and DWARF tables. Same flags as the Makefile's dist target.
+        run: |
+          go build -trimpath -ldflags="-s -w" \
+            -o "dist/fleetgauge-linux-${GOARCH}" ./cmd/fleetgauge
+          ls -l "dist/fleetgauge-linux-${GOARCH}"
+
+      - name: confirm the binary is static
+        run: |
+          # CGO_ENABLED=0 must yield a binary with no dynamic interpreter.
+          # `file` reports "statically linked" for both architectures; a
+          # dynamically linked result means cgo crept back in.
+          file "dist/fleetgauge-linux-${{ matrix.goarch }}"
+          file "dist/fleetgauge-linux-${{ matrix.goarch }}" | grep -q 'statically linked'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fleetgauge-linux-${{ matrix.goarch }}
+          path: dist/fleetgauge-linux-${{ matrix.goarch }}
+          if-no-files-found: error
