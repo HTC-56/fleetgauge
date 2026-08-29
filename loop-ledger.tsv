@@ -24,3 +24,5 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T09:10:42	loop	qwen	commit	151	41275	62	17	357	- [ ] §C8 — Create `internal/server/hub_test.go`: 6 assertions on the hub and
 2026-08-29T09:13:28	loop	qwen	no-op	126	35111	49	12	164	- [ ] §C9 — Edit `cmd/fleetgauge/main.go`: both modes serve HTTP instead of
 2026-08-29T09:18:26	loop	qwen	commit	110	17006	45	8	296	- [ ] §C10 — Run `bash verify.sh`, append a Phase C section to STATUS.md, flip
+2026-08-29T09:29:25	plan	claude	commit	98	103155	63	21	522	plan next phase
+2026-08-29T09:31:00	loop	qwen	commit	35	7436	14	2	135	- [ ] §D4 — Create `internal/ledger/ledger_test.go`: 6 assertions on the JSONL
