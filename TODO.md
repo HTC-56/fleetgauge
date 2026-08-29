@@ -32,6 +32,6 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §A9 — Create `deploy/fleetgauge.example.yaml`, a commented example
   covering every key, plus one test in `config_test.go` that loads it so the
   example cannot drift from the loader. Spec: §A9.
-- [ ] §A10 — Create `verify.sh` (gofmt + vet + test + scrub + README lint),
+- [x] §A10 — Create `verify.sh` (gofmt + vet + test + scrub + README lint),
   then append a Phase A section to STATUS.md and update ROADMAP rows 1 and 2 to
   SHIPPED, row 8 to PARTIAL, with the two reservations. Spec: §A10.
