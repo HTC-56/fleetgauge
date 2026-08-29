@@ -40,3 +40,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T10:12:48	loop	qwen	commit	75	13876	32	5	283	- [ ] §E7 — Edit `README.md`: real fleet in five, the systemd install, the three
 2026-08-29T10:20:58	loop	qwen	commit	95	17353	38	7	489	- [ ] §E8 — Edit `internal/config/config_test.go`: one test that
 2026-08-29T10:33:51	loop	qwen	commit	113	21500	43	12	771	- [ ] §E9 — [CLAUDE] Create `docs/PROCESS.md`: the loop story, with real
+2026-08-29T10:38:23	loop	qwen	commit	106	29712	38	10	271	- [ ] §E9 — [CLAUDE] Create `docs/PROCESS.md`: the loop story, with real
