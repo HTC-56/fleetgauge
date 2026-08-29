@@ -126,7 +126,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §D7 — Edit `deploy/fleetgauge.example.yaml`: document `ledger_path`, fix
   the `journal_lines` comment, extend the `bearer_token` comment with the new
   rule. No Go changes. Spec: §D7.
-- [ ] §D8 — Edit `cmd/fleetgauge/main.go`: open the ledger and pass
+- [x] §D8 — Edit `cmd/fleetgauge/main.go`: open the ledger and pass
   `BearerToken` + `Ledger` in both modes; add a `-token` flag that turns demo
   restart on for three units. Spec: §D8.
 - [ ] §D9 — Create `internal/page/page_test.go`: 6 assertions that the page

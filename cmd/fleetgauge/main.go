@@ -6,6 +6,7 @@
 //	-config path to the fleet config file (default "fleetgauge.yaml")
 //	-demo serve a synthetic fleet; no systemd required
 //	-addr listen address; overrides the config file
+//	-token bearer token for demo mode; real mode reads it from the config file
 package main
 
 import (
@@ -23,6 +24,7 @@ import (
 	"fleetgauge/internal/backend/fake"
 	"fleetgauge/internal/backend/systemd"
 	"fleetgauge/internal/config"
+	"fleetgauge/internal/ledger"
 	"fleetgauge/internal/poller"
 	"fleetgauge/internal/server"
 )
@@ -39,20 +41,39 @@ func run() error {
 		configPath = flag.String("config", "fleetgauge.yaml", "path to the fleet config file")
 		demo       = flag.Bool("demo", false, "serve a synthetic fleet; no systemd required")
 		addr       = flag.String("addr", "", "listen address; overrides the config file")
+		token      = flag.String("token", "", "bearer token for demo mode; real mode reads it from the config file")
 	)
 	flag.Parse()
 
 	if *demo {
-		return runDemo(*addr)
+		return runDemo(*addr, *token)
 	}
 	return runReal(*configPath, *addr)
 }
 
 // runDemo builds a synthetic fleet, polls it, and serves the HTTP surface.
-func runDemo(addr string) error {
+func runDemo(addr, token string) error {
 	be := fake.New()
 	p := poller.New(be, []string{"*.service"}, time.Second, 120)
-	return serve(addr, be, p, server.Options{})
+	opts := server.Options{
+		AllowRestart: map[string]bool{
+			"nginx.service":  true,
+			"worker.service": true,
+			"flappy.service": true,
+		},
+		BroadcastInterval: server.DefaultBroadcastInterval,
+		Heartbeat:         server.DefaultHeartbeat,
+	}
+	if token != "" {
+		l, err := ledger.Open("ledger.jsonl")
+		if err != nil {
+			return fmt.Errorf("open ledger: %w", err)
+		}
+		defer l.Close()
+		opts.BearerToken = token
+		opts.Ledger = l
+	}
+	return serve(addr, be, p, opts)
 }
 
 // runReal loads the config, builds a systemd backend, and serves the HTTP
@@ -75,11 +96,19 @@ func runReal(configPath, addr string) error {
 		allowRestart[u.Name] = u.AllowRestart
 	}
 
+	l, err := ledger.Open(cfg.LedgerPath)
+	if err != nil {
+		return fmt.Errorf("open ledger: %w", err)
+	}
+	defer l.Close()
+
 	opts := server.Options{
 		AllowRestart:      allowRestart,
 		JournalLines:      cfg.JournalLines,
 		BroadcastInterval: server.DefaultBroadcastInterval,
 		Heartbeat:         server.DefaultHeartbeat,
+		BearerToken:       cfg.BearerToken,
+		Ledger:            l,
 	}
 
 	p := poller.New(be, patterns, cfg.PollInterval, 60)
