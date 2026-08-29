@@ -27,3 +27,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T09:29:25	plan	claude	commit	98	103155	63	21	522	plan next phase
 2026-08-29T09:31:00	loop	qwen	commit	35	7436	14	2	135	- [ ] §D4 — Create `internal/ledger/ledger_test.go`: 6 assertions on the JSONL
 2026-08-29T09:33:51	loop	qwen	commit	92	19513	39	7	170	- [ ] §D5 — Create `internal/server/restart_test.go`: 6 assertions on the three
+2026-08-29T09:35:52	loop	qwen	commit	98	19157	42	12	120	- [ ] §D6 — Edit `internal/config/config.go`: add the `ledger_path` key with
