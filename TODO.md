@@ -146,7 +146,7 @@ TASK_PHASE_E.md before writing any README.
 Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 `bash scripts/scrub-check.sh`.
 
-- [ ] §E4 — Create `Makefile`: build/test/vet/fmt/verify/demo/dist/clean,
+- [x] §E4 — Create `Makefile`: build/test/vet/fmt/verify/demo/dist/clean,
   default goal `build`, `CGO_ENABLED=0`. Recipe lines need literal TABs.
   Spec: TASK_PHASE_E.md §E4.
 - [ ] §E5 — Create `deploy/fleetgauge.service`: the example systemd unit, with
