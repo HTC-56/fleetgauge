@@ -21,6 +21,7 @@ type Backend struct {
 	mu       sync.Mutex
 	units    map[string]*unit
 	baseTime time.Time
+	step     int // deterministic tick counter — no rand, no clock
 }
 
 type unit struct {
@@ -192,4 +193,60 @@ func (b *Backend) Restart(_ context.Context, name string) error {
 	u.nRestarts++
 
 	return nil
+}
+
+// Tick advances the synthetic fleet by one deterministic step.
+//
+// flappy.service alternates between active/running and failed/failed on each
+// tick; when it returns to active its NRestarts increments by one.
+// wedged.service stays failed across every tick.
+// Active units drift their MemoryBytes by a small amount each tick while
+// staying positive. MemoryUnknown units keep MemoryUnknown — drift never
+// turns "unknown" into a number.
+//
+// Tick is fully deterministic: no math/rand, no wall-clock reads.
+// Everything derives from the internal step counter on the Backend struct.
+func (b *Backend) Tick() {
+	b.mu.Lock()
+	defer b.mu.Unlock()
+
+	b.step++
+
+	for name, u := range b.units {
+		switch name {
+		case "flappy.service":
+			// Alternate active/running ↔ failed/failed each tick.
+			// When returning to active, bump NRestarts.
+			if u.activeState == backend.StateActive {
+				u.activeState = backend.StateFailed
+				u.subState = "failed"
+			} else {
+				u.activeState = backend.StateActive
+				u.subState = "running"
+				u.nRestarts++
+			}
+		case "wedged.service":
+			// Wedged units never recover.
+			u.activeState = backend.StateFailed
+			u.subState = "failed"
+		default:
+			// Drift MemoryBytes for active units; leave failed units untouched.
+			if u.activeState == backend.StateActive {
+				if u.memoryBytes == backend.MemoryUnknown {
+					// Never turn "unknown" into a concrete number.
+					continue
+				}
+				// Drift by ±1 % of base, clamped to stay positive.
+				drift := (b.step%2)*2 - 1 // alternates -1, +1, -1, +1, …
+				base := int64(1 << 20)    // 1 MiB
+				d := int64(drift) * base / 100
+				nb := u.memoryBytes + d
+				if nb < 1<<10 {
+					// Clamp to 1 KiB so memory never goes non-positive.
+					nb = 1 << 10
+				}
+				u.memoryBytes = nb
+			}
+		}
+	}
 }

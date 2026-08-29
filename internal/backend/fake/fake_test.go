@@ -147,3 +147,165 @@ func TestExactlyOneMemoryUnknown(t *testing.T) {
 		t.Errorf("MemoryUnknown count = %d, want 1", unknown)
 	}
 }
+
+// TestTickDeterminism asserts that two fresh fakes, ticked the same number of
+// times, report identical snapshots — Tick is fully deterministic.
+func TestTickDeterminism(t *testing.T) {
+	a := New()
+	b := New()
+
+	for i := 0; i < 10; i++ {
+		a.Tick()
+		b.Tick()
+	}
+
+	names, err := a.List(context.Background(), []string{"*"})
+	if err != nil {
+		t.Fatalf("List: %v", err)
+	}
+
+	snapsA, err := a.Show(context.Background(), names)
+	if err != nil {
+		t.Fatalf("Show A: %v", err)
+	}
+
+	snapsB, err := b.Show(context.Background(), names)
+	if err != nil {
+		t.Fatalf("Show B: %v", err)
+	}
+
+	if len(snapsA) != len(snapsB) {
+		t.Fatalf("snapshot counts differ: A=%d, B=%d", len(snapsA), len(snapsB))
+	}
+
+	for i := range snapsA {
+		aSnap := snapsA[i]
+		bSnap := snapsB[i]
+		if aSnap.ActiveState != bSnap.ActiveState ||
+			aSnap.SubState != bSnap.SubState ||
+			aSnap.NRestarts != bSnap.NRestarts ||
+			aSnap.MemoryBytes != bSnap.MemoryBytes {
+			t.Errorf("After %d ticks, snap[%d] (%s) differs: A={%v/%v/%d/%d} B={%v/%v/%d/%d}",
+				10, i, aSnap.Name,
+				aSnap.ActiveState, aSnap.SubState, aSnap.NRestarts, aSnap.MemoryBytes,
+				bSnap.ActiveState, bSnap.SubState, bSnap.NRestarts, bSnap.MemoryBytes)
+		}
+	}
+}
+
+// TestFlappyEvenOdd asserts that after an even number of ticks flappy.service
+// returns to its starting active/running state, while after an odd number it
+// is failed.
+func TestFlappyEvenOdd(t *testing.T) {
+	b := New()
+
+	// Start state: active/running.
+	before, err := b.Show(context.Background(), []string{"flappy.service"})
+	if err != nil {
+		t.Fatalf("Show: %v", err)
+	}
+	if !before[0].Found || before[0].ActiveState != backend.StateActive {
+		t.Fatal("flappy should start active")
+	}
+
+	// Two ticks (even) → back to active.
+	b.Tick()
+	b.Tick()
+	two, err := b.Show(context.Background(), []string{"flappy.service"})
+	if err != nil {
+		t.Fatalf("Show after 2: %v", err)
+	}
+	if two[0].ActiveState != backend.StateActive {
+		t.Errorf("After 2 ticks: ActiveState = %q, want active", two[0].ActiveState)
+	}
+	if two[0].SubState != "running" {
+		t.Errorf("After 2 ticks: SubState = %q, want running", two[0].SubState)
+	}
+
+	// Three ticks (odd) → failed.
+	b.Tick()
+	three, err := b.Show(context.Background(), []string{"flappy.service"})
+	if err != nil {
+		t.Fatalf("Show after 3: %v", err)
+	}
+	if three[0].ActiveState != backend.StateFailed {
+		t.Errorf("After 3 ticks: ActiveState = %q, want failed", three[0].ActiveState)
+	}
+}
+
+// TestFlappyRestartsGrows asserts that flappy.service's NRestarts after 10
+// ticks is greater than after 2 ticks — the counter actually increments.
+func TestFlappyRestartsGrows(t *testing.T) {
+	a := New()
+	b := New()
+
+	// Tick both to 2.
+	for i := 0; i < 2; i++ {
+		a.Tick()
+		b.Tick()
+	}
+
+	two, err := a.Show(context.Background(), []string{"flappy.service"})
+	if err != nil {
+		t.Fatalf("Show after 2: %v", err)
+	}
+
+	// Tick both to 10.
+	for i := 2; i < 10; i++ {
+		a.Tick()
+		b.Tick()
+	}
+
+	ten, err := a.Show(context.Background(), []string{"flappy.service"})
+	if err != nil {
+		t.Fatalf("Show after 10: %v", err)
+	}
+
+	if ten[0].NRestarts <= two[0].NRestarts {
+		t.Errorf("NRestarts: after 10 ticks (%d) <= after 2 ticks (%d), want >",
+			ten[0].NRestarts, two[0].NRestarts)
+	}
+}
+
+// TestWedgedStaysFailed asserts that wedged.service remains failed after 10
+// ticks — it never recovers.
+func TestWedgedStaysFailed(t *testing.T) {
+	b := New()
+
+	for i := 0; i < 10; i++ {
+		b.Tick()
+	}
+
+	snaps, err := b.Show(context.Background(), []string{"wedged.service"})
+	if err != nil {
+		t.Fatalf("Show: %v", err)
+	}
+
+	if snaps[0].ActiveState != backend.StateFailed {
+		t.Errorf("ActiveState = %q, want failed after 10 ticks", snaps[0].ActiveState)
+	}
+	if snaps[0].SubState != "failed" {
+		t.Errorf("SubState = %q, want failed after 10 ticks", snaps[0].SubState)
+	}
+}
+
+// TestMemoryUnknownStays asserts that the unit with MemoryUnknown memory
+// (monitor.service) still reports MemoryUnknown after 10 ticks — drift
+// never turns "unknown" into a number.
+func TestMemoryUnknownStays(t *testing.T) {
+	b := New()
+
+	for i := 0; i < 10; i++ {
+		b.Tick()
+	}
+
+	snaps, err := b.Show(context.Background(), []string{"monitor.service"})
+	if err != nil {
+		t.Fatalf("Show: %v", err)
+	}
+
+	if snaps[0].MemoryBytes != backend.MemoryUnknown {
+		t.Errorf("MemoryBytes = %d, want MemoryUnknown after 10 ticks",
+			snaps[0].MemoryBytes)
+	}
+}
