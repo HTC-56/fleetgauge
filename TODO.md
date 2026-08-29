@@ -59,7 +59,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §B8 — Create `internal/metrics/metrics.go`: `Render(store, now) string`,
   the five Prometheus families from SPEC feature 5. Memory is omitted, never
   negative, when accounting is off. Spec: §B8.
-- [ ] §B9 — Create `internal/metrics/metrics_test.go`: 6 assertions — HELP/TYPE
+- [x] §B9 — Create `internal/metrics/metrics_test.go`: 6 assertions — HELP/TYPE
   lines, up 1 vs 0, no memory line for the unknown unit, byte-identical
   re-render, escaped label. Spec: §B9.
 - [ ] §B10 — Edit `cmd/fleetgauge/main.go`: `-demo` polls the fake fleet five
