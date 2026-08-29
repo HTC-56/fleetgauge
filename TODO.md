@@ -87,7 +87,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §C5 — Create `internal/server/server.go`: `Handler()` wiring a ServeMux
   for `GET /{$}`, `/healthz`, `/metrics`, `/events`, wrapped in `LogRequests`,
   plus the three thin handlers. `/healthz` is 503 when unpolled. Spec: §C5.
-- [ ] §C6 — Create `internal/server/server_test.go`: 6 httptest assertions on
+- [x] §C6 — Create `internal/server/server_test.go`: 6 httptest assertions on
   the four routes — page HTML, metrics text, healthz ok vs degraded, 404 on an
   unknown path, 405 on POST. Spec: §C6.
 - [ ] §C7 — Create `internal/server/journal.go` + `journal_test.go` and add the
