@@ -235,3 +235,58 @@ units:
 		t.Errorf("error = %q, want it to mention bearer_token", err.Error())
 	}
 }
+
+// TestConfigServiceStateDirectoryAgreesWithLedgerPath asserts that the
+// shipped systemd unit file's StateDirectory value matches the directory
+// that the example config's ledger_path lives under.  If someone moves the
+// ledger without moving the unit file this fails — and the example can
+// never drift from the loader.
+func TestConfigServiceStateDirectoryAgreesWithLedgerPath(t *testing.T) {
+	// 1. The service file exists and is non-empty.
+	svc, err := os.ReadFile("../../deploy/fleetgauge.service")
+	if err != nil {
+		t.Fatalf("read fleetgauge.service: %v", err)
+	}
+	if len(svc) == 0 {
+		t.Fatal("fleetgauge.service is empty")
+	}
+
+	// 2. All three section headers are present.
+	for _, sec := range []string{"[Unit]", "[Service]", "[Install]"} {
+		if !strings.Contains(string(svc), sec) {
+			t.Errorf("service file missing %s section", sec)
+		}
+	}
+
+	// 3. ExecStart names a -config flag.
+	hasConfig := false
+	for _, line := range strings.Split(string(svc), "\n") {
+		if strings.Contains(line, "ExecStart") && strings.Contains(line, "-config") {
+			hasConfig = true
+		}
+	}
+	if !hasConfig {
+		t.Error("ExecStart line does not name a -config flag")
+	}
+
+	// 4. StateDirectory=fleetgauge is set.
+	hasStateDir := false
+	for _, line := range strings.Split(string(svc), "\n") {
+		if strings.Contains(line, "StateDirectory=fleetgauge") {
+			hasStateDir = true
+		}
+	}
+	if !hasStateDir {
+		t.Error("service file does not set StateDirectory=fleetgauge")
+	}
+
+	// 5. The example config's LedgerPath is under /var/lib/fleetgauge/.
+	cfg, err := Load("../../deploy/fleetgauge.example.yaml")
+	if err != nil {
+		t.Fatalf("load example config: %v", err)
+	}
+	wantDir := "/var/lib/fleetgauge/"
+	if !strings.HasPrefix(cfg.LedgerPath, wantDir) {
+		t.Errorf("LedgerPath = %q, want prefix %q (the directory StateDirectory=fleetgauge creates)", cfg.LedgerPath, wantDir)
+	}
+}

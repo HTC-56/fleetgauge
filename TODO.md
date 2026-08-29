@@ -157,7 +157,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §E7 — Edit `README.md`: real fleet in five, the systemd install, the three
   restart gates, build and test, and the "what is not proved" section.
   Spec: §E7.
-- [ ] §E8 — Edit `internal/config/config_test.go`: one test that
+- [x] §E8 — Edit `internal/config/config_test.go`: one test that
   `deploy/fleetgauge.service`'s `StateDirectory` agrees with the example
   config's `ledger_path`. Mirror `TestConfigExampleLoad`. Spec: §E8.
 - [ ] §E9 — [CLAUDE] Create `docs/PROCESS.md`: the loop story, with real
