@@ -51,7 +51,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §B5 — Create `internal/poller/store_test.go`: 6 assertions driving
   `Record`/`RecordError` directly — first observation is not a transition,
   depth cap, snapshot age, error handling. Spec: §B5.
-- [ ] §B6 — Create `internal/poller/poller_test.go`: 6 assertions against
+- [x] §B6 — Create `internal/poller/poller_test.go`: 6 assertions against
   `fake.New()` plus one task-local always-failing stub backend. Spec: §B6.
 - [ ] §B7 — Create `internal/poller/overview.go` + `overview_test.go`:
   `UnitView` and `Store.Overview(now)`, built only from the Store's exported
