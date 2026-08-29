@@ -1,17 +1,22 @@
 // Command fleetgauge watches a declared fleet of systemd units and serves one
 // page that answers "is everything up?".
 //
-// Phase A wires the toolchain and the backend seam only: there is no HTTP
-// surface yet, by design (see SPEC.md, "Pre-registered rules"). The flags below
-// are the committed surface; later phases give them behaviour.
+// Flags:
+//
+//	-config path to the fleet config file (default "fleetgauge.yaml")
+//	-demo serve a synthetic fleet; no systemd required
+//	-addr listen address; overrides the config file
 package main
 
 import (
 	"context"
+	"errors"
 	"flag"
 	"fmt"
+	"log/slog"
+	"net/http"
 	"os"
-	"text/tabwriter"
+	"os/signal"
 	"time"
 
 	"fleetgauge/internal/backend"
@@ -19,6 +24,7 @@ import (
 	"fleetgauge/internal/backend/systemd"
 	"fleetgauge/internal/config"
 	"fleetgauge/internal/poller"
+	"fleetgauge/internal/server"
 )
 
 func main() {
@@ -36,35 +42,22 @@ func run() error {
 	)
 	flag.Parse()
 
-	_ = addr
-
 	if *demo {
-		return runDemo()
+		return runDemo(*addr)
 	}
-	return runReal(*configPath)
+	return runReal(*configPath, *addr)
 }
 
-// runDemo polls the synthetic fleet five times and prints an overview table.
-func runDemo() error {
+// runDemo builds a synthetic fleet, polls it, and serves the HTTP surface.
+func runDemo(addr string) error {
 	be := fake.New()
-	p := poller.New(be, []string{"*.service"}, time.Second, 60)
-
-	for i := 0; i < 5; i++ {
-		if i > 0 {
-			be.Tick()
-		}
-		if _, err := p.PollOnce(context.Background()); err != nil {
-			return fmt.Errorf("demo poll %d: %w", i+1, err)
-		}
-	}
-
-	printOverview(p.Store(), time.Now())
-	return nil
+	p := poller.New(be, []string{"*.service"}, time.Second, 120)
+	return serve(addr, be, p, server.Options{})
 }
 
-// runReal loads the config, builds a systemd backend, polls once, and prints
-// the overview table.
-func runReal(configPath string) error {
+// runReal loads the config, builds a systemd backend, and serves the HTTP
+// surface.
+func runReal(configPath, addr string) error {
 	cfg, err := config.Load(configPath)
 	if err != nil {
 		return fmt.Errorf("config: %w", err)
@@ -72,48 +65,71 @@ func runReal(configPath string) error {
 
 	be := systemd.New()
 
-	// Extract unit names (patterns) from config.
 	patterns := make([]string, len(cfg.Units))
 	for i, u := range cfg.Units {
 		patterns[i] = u.Name
 	}
 
+	allowRestart := make(map[string]bool, len(cfg.Units))
+	for _, u := range cfg.Units {
+		allowRestart[u.Name] = u.AllowRestart
+	}
+
+	opts := server.Options{
+		AllowRestart:      allowRestart,
+		JournalLines:      cfg.JournalLines,
+		BroadcastInterval: server.DefaultBroadcastInterval,
+		Heartbeat:         server.DefaultHeartbeat,
+	}
+
 	p := poller.New(be, patterns, cfg.PollInterval, 60)
-	if _, err := p.PollOnce(context.Background()); err != nil {
-		return fmt.Errorf("poll: %w", err)
+	if addr == "" {
+		addr = cfg.Listen
+	}
+	return serve(addr, be, p, opts)
+}
+
+// serve starts the poller, the broadcast loop, and an HTTP server on the
+// given address. It blocks until an interrupt arrives, then shuts down
+// gracefully.
+func serve(addr string, be backend.Backend, p *poller.Poller, opts server.Options) error {
+	if addr == "" {
+		addr = "127.0.0.1:8080"
 	}
 
-	printOverview(p.Store(), time.Now())
+	log := slog.New(slog.NewTextHandler(os.Stderr, nil))
+
+	opts.Store = p.Store()
+	opts.Backend = be
+	opts.Logger = log
+	srv := server.New(opts)
+	defer srv.Close()
+
+	ctx, stop := signal.NotifyContext(context.Background(), os.Interrupt)
+	defer stop()
+
+	go p.Run(ctx)
+	go srv.Broadcast(ctx)
+
+	hs := &http.Server{
+		Addr:    addr,
+		Handler: srv.Handler(),
+	}
+
+	log.Info("listening", "addr", addr)
+
+	go func() {
+		if err := hs.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
+			log.Error("listen", "err", err)
+		}
+	}()
+
+	<-ctx.Done()
+
+	if err := hs.Shutdown(context.Background()); err != nil {
+		log.Error("shutdown", "err", err)
+		return err
+	}
+
 	return nil
-}
-
-// printOverview writes a tabwriter table of all unit views to stdout.
-func printOverview(s *poller.Store, now time.Time) {
-	w := tabwriter.NewWriter(os.Stdout, 0, 0, 2, ' ', 0)
-	fmt.Fprintln(w, "NAME\tSTATE\tRESTARTS\tMEMORY\tUPTIME\tTRANSITIONS")
-
-	for _, v := range s.Overview(now) {
-		mem := formatMemory(v.MemoryBytes)
-		uptime := formatUptime(v.Uptime)
-		fmt.Fprintf(w, "%s\t%s\t%d\t%s\t%s\t%d\n",
-			v.Name, v.SubState, v.NRestarts, mem, uptime, v.Transitions)
-	}
-	w.Flush()
-}
-
-// formatMemory renders MemoryBytes as a human-readable string. MemoryUnknown
-// (accounting off or unavailable) becomes "-".
-func formatMemory(b int64) string {
-	if b == backend.MemoryUnknown {
-		return "-"
-	}
-	return fmt.Sprintf("%d", b)
-}
-
-// formatUptime renders a duration as a compact human-readable string.
-func formatUptime(d time.Duration) string {
-	if d == 0 {
-		return "0s"
-	}
-	return d.Round(time.Second).String()
 }

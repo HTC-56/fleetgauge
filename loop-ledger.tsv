@@ -22,3 +22,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T08:55:33	loop	qwen	commit	103	24836	45	9	634	- [ ] §C6 — Create `internal/server/server_test.go`: 6 httptest assertions on
 2026-08-29T09:04:44	loop	qwen	commit	128	31666	52	14	550	- [ ] §C7 — Create `internal/server/journal.go` + `journal_test.go` and add the
 2026-08-29T09:10:42	loop	qwen	commit	151	41275	62	17	357	- [ ] §C8 — Create `internal/server/hub_test.go`: 6 assertions on the hub and
+2026-08-29T09:13:28	loop	qwen	no-op	126	35111	49	12	164	- [ ] §C9 — Edit `cmd/fleetgauge/main.go`: both modes serve HTTP instead of
