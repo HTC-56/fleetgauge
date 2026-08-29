@@ -19,3 +19,4 @@ time	lane	model	result	turns	out_tok	tools	edits	dur_s	task
 2026-08-29T08:39:01	plan	claude	commit	75	151758	43	11	615	plan next phase
 2026-08-29T08:42:57	loop	qwen	commit	56	12374	20	5	245	- [ ] §C4 — Create `internal/server/log.go` + `log_test.go`: a
 2026-08-29T08:44:58	loop	qwen	commit	112	20328	47	9	120	- [ ] §C5 — Create `internal/server/server.go`: `Handler()` wiring a ServeMux
+2026-08-29T08:55:33	loop	qwen	commit	103	24836	45	9	634	- [ ] §C6 — Create `internal/server/server_test.go`: 6 httptest assertions on
