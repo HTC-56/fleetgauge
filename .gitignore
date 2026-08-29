@@ -4,5 +4,7 @@ coverage.out
 *.log
 .loop-paused
 .escalate-rung
+.plan-stamps/
+.plan-lock/
 ledger.jsonl
 fleetgauge.yaml
