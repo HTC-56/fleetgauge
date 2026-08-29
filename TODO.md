@@ -152,7 +152,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §E5 — Create `deploy/fleetgauge.service`: the example systemd unit, with
   `StateDirectory=fleetgauge` and four hardening keys. Mirror the comment voice
   of `deploy/fleetgauge.example.yaml`. Spec: §E5.
-- [ ] §E6 — Create `README.md`: what it is, the one-minute demo quickstart, and
+- [x] §E6 — Create `README.md`: what it is, the one-minute demo quickstart, and
   the endpoint table. First task the README lint gates. Spec: §E6.
 - [ ] §E7 — Edit `README.md`: real fleet in five, the systemd install, the three
   restart gates, build and test, and the "what is not proved" section.
