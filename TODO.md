@@ -154,7 +154,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
   of `deploy/fleetgauge.example.yaml`. Spec: §E5.
 - [x] §E6 — Create `README.md`: what it is, the one-minute demo quickstart, and
   the endpoint table. First task the README lint gates. Spec: §E6.
-- [ ] §E7 — Edit `README.md`: real fleet in five, the systemd install, the three
+- [x] §E7 — Edit `README.md`: real fleet in five, the systemd install, the three
   restart gates, build and test, and the "what is not proved" section.
   Spec: §E7.
 - [ ] §E8 — Edit `internal/config/config_test.go`: one test that
