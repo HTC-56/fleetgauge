@@ -48,7 +48,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §B4 — Create `internal/poller/ring_test.go`: 6 assertions on the
   unexported ring (capacity, oldest-first order, overwrite on wrap, `last()`,
   zero capacity, fresh slice). Spec: TASK_PHASE_B.md §B4.
-- [ ] §B5 — Create `internal/poller/store_test.go`: 6 assertions driving
+- [x] §B5 — Create `internal/poller/store_test.go`: 6 assertions driving
   `Record`/`RecordError` directly — first observation is not a transition,
   depth cap, snapshot age, error handling. Spec: §B5.
 - [ ] §B6 — Create `internal/poller/poller_test.go`: 6 assertions against
