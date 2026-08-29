@@ -114,7 +114,7 @@ already exist — never redefine `pinnedClock()`.
 Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 `bash scripts/scrub-check.sh`.
 
-- [ ] §D4 — Create `internal/ledger/ledger_test.go`: 6 assertions on the JSONL
+- [x] §D4 — Create `internal/ledger/ledger_test.go`: 6 assertions on the JSONL
   file (create, one object per line, field round-trip, reopen appends, Append
   after Close, 20 concurrent appends). Spec: TASK_PHASE_D.md §D4.
 - [ ] §D5 — Create `internal/server/restart_test.go`: 6 assertions on the three
