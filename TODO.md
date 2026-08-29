@@ -23,7 +23,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §A6 — Edit `internal/backend/fake/fake.go`: add a deterministic `Tick()`
   (no rand, no clock) so `flappy.service` flaps and `wedged.service` stays
   failed; add the 5 drift tests. Spec: §A6.
-- [ ] §A7 — Create `internal/config/config.go`: the YAML fleet config struct,
+- [x] §A7 — Create `internal/config/config.go`: the YAML fleet config struct,
   `Load`, three defaults and three validation errors. First file to import
   `gopkg.in/yaml.v3` — read the §A7 note on `go mod tidy`. Spec: §A7.
 - [ ] §A8 — Create `internal/config/config_test.go`: 6 assertions using YAML
