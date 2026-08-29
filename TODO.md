@@ -14,7 +14,7 @@ against those; `internal/backend/systemd/` is your pattern file for all of it.
 Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 `bash scripts/scrub-check.sh`.
 
-- [ ] §A4 — Create `internal/backend/fake/fake.go`: a `Backend` for a static
+- [x] §A4 — Create `internal/backend/fake/fake.go`: a `Backend` for a static
   12-unit synthetic fleet, implementing the `backend.Backend` interface.
   Mirror `internal/backend/systemd/systemd.go`. Spec: TASK_PHASE_A.md §A4.
 - [ ] §A5 — Create `internal/backend/fake/fake_test.go`: 6 assertions on the
