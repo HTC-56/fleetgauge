@@ -29,6 +29,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/healthz", s.HandleHealthz)
 	mux.HandleFunc("/metrics", s.HandleMetrics)
 	mux.HandleFunc("/events", s.HandleEvents)
+	mux.HandleFunc("/units/{name}/journal", s.HandleJournal)
 
 	return LogRequests(s.log, mux)
 }

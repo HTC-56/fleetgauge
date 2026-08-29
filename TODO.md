@@ -90,7 +90,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §C6 — Create `internal/server/server_test.go`: 6 httptest assertions on
   the four routes — page HTML, metrics text, healthz ok vs degraded, 404 on an
   unknown path, 405 on POST. Spec: §C6.
-- [ ] §C7 — Create `internal/server/journal.go` + `journal_test.go` and add the
+- [x] §C7 — Create `internal/server/journal.go` + `journal_test.go` and add the
   `GET /units/{name}/journal` route to `Handler()`. 400/503/502 error paths;
   lines marshal as `[]`, never `null`. 4 assertions. Spec: §C7.
 - [ ] §C8 — Create `internal/server/hub_test.go`: 6 assertions on the hub and
