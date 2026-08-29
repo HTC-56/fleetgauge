@@ -17,7 +17,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §A4 — Create `internal/backend/fake/fake.go`: a `Backend` for a static
   12-unit synthetic fleet, implementing the `backend.Backend` interface.
   Mirror `internal/backend/systemd/systemd.go`. Spec: TASK_PHASE_A.md §A4.
-- [ ] §A5 — Create `internal/backend/fake/fake_test.go`: 6 assertions on the
+- [x] §A5 — Create `internal/backend/fake/fake_test.go`: 6 assertions on the
   static fleet (count, glob List, missing unit, Show ordering, Restart).
   Mirror `internal/backend/systemd/parse_test.go`. Spec: §A5.
 - [ ] §A6 — Edit `internal/backend/fake/fake.go`: add a deterministic `Tick()`
