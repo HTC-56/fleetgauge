@@ -129,7 +129,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §D8 — Edit `cmd/fleetgauge/main.go`: open the ledger and pass
   `BearerToken` + `Ledger` in both modes; add a `-token` flag that turns demo
   restart on for three units. Spec: §D8.
-- [ ] §D9 — Create `internal/page/page_test.go`: 6 assertions that the page
+- [x] §D9 — Create `internal/page/page_test.go`: 6 assertions that the page
   stays self-contained (no http://, no `<link`, no @import) and carries the
   restart control and a 7-wide drawer. Spec: §D9.
 - [ ] §D10 — Run `bash verify.sh`, append a Phase D section to STATUS.md, flip
