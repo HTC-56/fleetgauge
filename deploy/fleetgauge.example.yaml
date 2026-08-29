@@ -14,8 +14,10 @@
 listen: "127.0.0.1:8080"
 
 # bearer_token authenticates every request to fleetgauge.  Replace the
-# placeholder with a strong random value in your own config.  Restart
-# operations also require this token (triple-gated).
+# placeholder with a strong random value in your own config.  Any unit
+# that sets `allow_restart: true` requires a non-empty token — the
+# config fails to load otherwise.  Restart operations also require this
+# token (triple-gated).
 bearer_token: "CHANGE-ME-GENERATE-A-RANDOM-TOKEN"
 
 # poll_interval tells the watcher how often to check unit status.  Must
@@ -23,9 +25,16 @@ bearer_token: "CHANGE-ME-GENERATE-A-RANDOM-TOKEN"
 poll_interval: "5s"
 
 # journal_lines controls how many lines of journalctl output fleetgauge
-# attaches to each beat's visual layer.  Default: 50.  Set to 0 to
-# omit journal output entirely.
+# shows in the per-unit journal drawer on the page.  Default: 50.  Set
+# to 0 to omit journal output entirely.
 journal_lines: 50
+
+# ledger_path is the append-only JSONL file every restart attempt is
+# written to — one JSON object per line, for audit trails.  A relative
+# path resolves against the process working directory, so a config
+# running under systemd should give an absolute path (e.g. under
+# /var/lib).  Default: ledger.jsonl.
+ledger_path: "/var/lib/fleetgauge/ledger.jsonl"
 
 # units lists every systemd unit (or glob pattern) that fleetgauge
 # watches.  Each entry has:

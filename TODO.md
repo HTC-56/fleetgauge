@@ -123,7 +123,7 @@ Gate for every task: `gofmt -l .` empty, `go vet ./...`, `go test ./...`,
 - [x] §D6 — Edit `internal/config/config.go`: add the `ledger_path` key with
   default `ledger.jsonl`, plus one rule — `allow_restart` needs a
   `bearer_token`. 3 tests in `config_test.go`. Spec: §D6.
-- [ ] §D7 — Edit `deploy/fleetgauge.example.yaml`: document `ledger_path`, fix
+- [x] §D7 — Edit `deploy/fleetgauge.example.yaml`: document `ledger_path`, fix
   the `journal_lines` comment, extend the `bearer_token` comment with the new
   rule. No Go changes. Spec: §D7.
 - [ ] §D8 — Edit `cmd/fleetgauge/main.go`: open the ledger and pass
