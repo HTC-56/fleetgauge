@@ -7,7 +7,7 @@ import (
 	"strings"
 	"time"
 
-	"fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/poller"
 )
 
 // HandleEvents streams the fleet to one browser over Server-Sent Events.

@@ -8,8 +8,8 @@ import (
 	"strings"
 	"time"
 
-	"fleetgauge/internal/backend"
-	"fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/poller"
 )
 
 // Render returns the full Prometheus exposition text for the store at now.

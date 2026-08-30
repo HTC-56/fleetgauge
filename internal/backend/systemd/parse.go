@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // timestampLayout matches systemd's human-readable timestamp rendering, e.g.

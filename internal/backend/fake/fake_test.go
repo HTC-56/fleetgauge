@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // TestNewFleetCountAndListAll asserts that New() yields exactly 12 units,

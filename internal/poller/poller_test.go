@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"fleetgauge/internal/backend"
-	"fleetgauge/internal/backend/fake"
+	"github.com/HTC-56/fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend/fake"
 )
 
 // stubErrBackend is a task-local zero-value backend whose List always

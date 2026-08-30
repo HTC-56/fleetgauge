@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"fleetgauge/internal/metrics"
-	"fleetgauge/internal/page"
+	"github.com/HTC-56/fleetgauge/internal/metrics"
+	"github.com/HTC-56/fleetgauge/internal/page"
 )
 
 // HealthJSON is the /healthz response body.

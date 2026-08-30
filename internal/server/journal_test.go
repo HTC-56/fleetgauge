@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/poller"
 )
 
 func TestJournalReturnsLines(t *testing.T) {

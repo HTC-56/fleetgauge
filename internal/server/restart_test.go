@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"fleetgauge/internal/backend/fake"
-	"fleetgauge/internal/ledger"
-	"fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/backend/fake"
+	"github.com/HTC-56/fleetgauge/internal/ledger"
+	"github.com/HTC-56/fleetgauge/internal/poller"
 )
 
 // stubLedger is a thread-safe in-memory ledger for tests.

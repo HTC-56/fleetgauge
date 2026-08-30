@@ -5,8 +5,8 @@ import (
 	"testing"
 	"time"
 
-	"fleetgauge/internal/backend"
-	"fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/poller"
 )
 
 // testNow returns a fixed base time so samples are ordered and reproducible.

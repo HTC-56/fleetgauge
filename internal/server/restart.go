@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"strings"
 
-	"fleetgauge/internal/ledger"
+	"github.com/HTC-56/fleetgauge/internal/ledger"
 )
 
 // RestartJSON is the POST /units/{name}/restart response body.

@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"fleetgauge/internal/backend"
-	"fleetgauge/internal/ledger"
-	"fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/ledger"
+	"github.com/HTC-56/fleetgauge/internal/poller"
 )
 
 // Appender is the slice of internal/ledger the restart handler needs.

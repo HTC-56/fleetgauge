@@ -12,7 +12,7 @@ import (
 	"sync"
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // Backend holds a fixed fleet of synthetic units and their mutable state.

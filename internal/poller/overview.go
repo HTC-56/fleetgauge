@@ -3,7 +3,7 @@ package poller
 import (
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // UnitView is one row of the fleet overview: current state plus the history

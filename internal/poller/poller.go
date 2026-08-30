@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // Defaults used when New is given a nonsensical interval or depth.

@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/poller"
 )
 
 // TestServerIndexPage asserts that GET / returns the embedded dashboard HTML

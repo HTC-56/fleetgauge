@@ -183,13 +183,13 @@ every executor task that followed.
 
 ## Reservations
 
-**The real systemd backend is unproved.** `scripts/live-check.sh` exists and
-passes locally, but no human has run it on a real systemd system. It is the
-only proof that fleetgauge can read other units' states and restart them via
-`systemctl`. Without that run, no claim about real-systemd operation may
-appear in the documentation. This reservation was written into the README and
-repeated in every phase's "Not yet built" section.
+**The real systemd backend — proved 2026-08-29.** While the loop ran, the
+backend was unproved: CI exercises the fake backend only, and no claim about
+real-systemd operation was allowed in the documentation. That reservation was
+written into the README and repeated in every phase's "Not yet built" section.
+It was retired when a human ran `scripts/live-check.sh` read-only on a real
+systemd box: 6/6, systemd 255 — verdict recorded in STATUS.md.
 
-**The hero screenshot for the page was never produced.** It needs a browser
-and a human — neither of which the loop has. The README describes the page
-in prose instead.
+**The hero screenshot — produced 2026-08-29.** The loop could not make it (no
+browser, no eyes); a human ran the demo and committed `docs/hero.png`, now
+referenced from the README.

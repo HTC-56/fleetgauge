@@ -20,13 +20,13 @@ import (
 	"os/signal"
 	"time"
 
-	"fleetgauge/internal/backend"
-	"fleetgauge/internal/backend/fake"
-	"fleetgauge/internal/backend/systemd"
-	"fleetgauge/internal/config"
-	"fleetgauge/internal/ledger"
-	"fleetgauge/internal/poller"
-	"fleetgauge/internal/server"
+	"github.com/HTC-56/fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend/fake"
+	"github.com/HTC-56/fleetgauge/internal/backend/systemd"
+	"github.com/HTC-56/fleetgauge/internal/config"
+	"github.com/HTC-56/fleetgauge/internal/ledger"
+	"github.com/HTC-56/fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/server"
 )
 
 func main() {

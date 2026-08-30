@@ -10,7 +10,7 @@ package poller
 import (
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // Sample is one observation of one unit, stamped with the time the poller took

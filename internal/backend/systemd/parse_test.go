@@ -6,7 +6,7 @@ import (
 	"testing"
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 func readFixture(t *testing.T, name string) string {

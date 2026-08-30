@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"fleetgauge/internal/backend/fake"
-	"fleetgauge/internal/poller"
+	"github.com/HTC-56/fleetgauge/internal/backend/fake"
+	"github.com/HTC-56/fleetgauge/internal/poller"
 )
 
 // This file is the planning lane's smoke test: it proves the SSE hub, the

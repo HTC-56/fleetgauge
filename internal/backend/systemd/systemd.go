@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // showProperties are exactly the properties fleetgauge parses. Asking for a

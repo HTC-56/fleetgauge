@@ -1,4 +1,4 @@
-module fleetgauge
+module github.com/HTC-56/fleetgauge
 
 go 1.27
 

@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // pinnedClock is defined in poller_smoke_test.go — reuse, never redefine.

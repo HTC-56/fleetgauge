@@ -5,7 +5,7 @@ import (
 	"sync"
 	"time"
 
-	"fleetgauge/internal/backend"
+	"github.com/HTC-56/fleetgauge/internal/backend"
 )
 
 // Transition is one observed change of a unit's ActiveState.
